@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Parallel31</title>
+  <meta name="description" content="Privacy Policy for Parallel31. How we collect, use and protect your personal data.">
+  <meta name="robots" content="noindex, follow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400&family=Raleway:wght@300&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:           #F0EAE0;
+      --text:         #1A1610;
+      --text-muted:   #6D655C;
+      --text-dim:     #B5ADA4;
+      --accent:       #8C5F2C;
+      --border:       rgba(26, 22, 16, 0.10);
+      --border-light: rgba(26, 22, 16, 0.16);
+      --max:          760px;
+      --px:           clamp(22px, 5.5vw, 48px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ── */
+    .site-header {
+      padding: 40px var(--px) 40px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .brand-name {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: 22px;
+      color: var(--text);
+      letter-spacing: 0.01em;
+      text-decoration: none;
+    }
+    .brand-name:hover { text-decoration: none; }
+
+    .brand-sub {
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .back-link {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); text-decoration: none; }
+    .back-link::before {
+      content: '←';
+      font-size: 14px;
+    }
+
+    /* ── Content ── */
+    .content {
+      max-width: calc(var(--max) + var(--px) * 2);
+      margin: 0 auto;
+      padding: clamp(56px, 8vw, 96px) var(--px) clamp(80px, 12vw, 140px);
+    }
+
+    .page-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .page-label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.015em;
+      margin-bottom: 12px;
+    }
+
+    .page-meta {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: clamp(40px, 6vw, 64px);
+      padding-bottom: clamp(32px, 5vw, 48px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(20px, 2vw, 26px);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-top: 48px;
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    h2:first-of-type { margin-top: 0; }
+
+    p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.78;
+      margin-bottom: 16px;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      margin: 12px 0 16px 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    ul li {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.72;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    ul li::before {
+      content: '';
+      display: block;
+      width: 14px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.4;
+      flex-shrink: 0;
+      margin-top: 11px;
+    }
+
+    strong {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .highlight-box {
+      border: 1px solid var(--border-light);
+      padding: 24px 28px;
+      margin: 32px 0;
+      background: rgba(140, 95, 44, 0.04);
+    }
+
+    .highlight-box p {
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 36px var(--px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand-name {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: 18px;
+      color: var(--text);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .site-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-brand">
+      <a href="index.html" class="brand-name">Parallel31</a>
+      <span class="brand-sub">Boutique AI Studio</span>
+    </div>
+    <a href="index.html" class="back-link">Back to home</a>
+  </header>
+
+  <main class="content">
+    <p class="page-label">Legal</p>
+    <h1 class="page-title">Privacy Policy</h1>
+    <p class="page-meta">Last updated: May 2026 &nbsp;·&nbsp; Applies to parallel31.io</p>
+
+    <h2>1. Who we are</h2>
+    <p>
+      This website is operated by <strong>Juan Pablo Alberca Lucas</strong>, trading as <strong>Parallel31</strong>, with registered address in Barcelona, Spain (NIF: <strong>09020143A</strong>).
+    </p>
+    <p>Contact: <a href="mailto:hello@parallel31.io">hello@parallel31.io</a></p>
+
+    <h2>2. What data we collect</h2>
+    <p>When you use the contact form on this website, we collect:</p>
+    <ul>
+      <li><strong>Full name</strong> — to address you correctly in our response</li>
+      <li><strong>Email address</strong> — to reply to your enquiry</li>
+      <li><strong>Message content</strong> — to understand your request and respond appropriately</li>
+    </ul>
+    <p>
+      We do not collect any other personal data. We do not use cookies for tracking or analytics. The only external resource loaded by this website is Google Fonts (typography), which may log your IP address as part of Google's standard infrastructure. See <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a> for details.
+    </p>
+
+    <h2>3. Why we collect it and legal basis</h2>
+    <p>Your data is used solely to respond to your enquiry and, where relevant, to assess a potential business collaboration. The legal basis under the GDPR is:</p>
+    <ul>
+      <li><strong>Legitimate interest</strong> (Art. 6.1.f GDPR) — responding to a contact request you initiated</li>
+      <li><strong>Pre-contractual measures</strong> (Art. 6.1.b GDPR) — if the enquiry relates to a potential service engagement</li>
+    </ul>
+
+    <h2>4. How we handle your data</h2>
+    <p>
+      Your contact form submissions are sent to our email via <a href="https://formsubmit.co" target="_blank" rel="noopener">FormSubmit</a>, a third-party form processing service. FormSubmit forwards your submission to our inbox and does not retain your data beyond what is technically necessary for delivery. See <a href="https://formsubmit.co/privacy" target="_blank" rel="noopener">FormSubmit's privacy policy</a> for details.
+    </p>
+    <p>
+      We do not sell, rent, share, or otherwise disclose your personal data to third parties, except as described above or where required by law.
+    </p>
+
+    <h2>5. How long we keep your data</h2>
+    <p>
+      We retain enquiry emails for as long as necessary to handle your request and any follow-up communication, and in any case for no longer than <strong>2 years</strong> from the date of last contact, unless a contractual relationship requires longer retention.
+    </p>
+
+    <h2>6. Your rights</h2>
+    <p>Under the GDPR, you have the right to:</p>
+    <ul>
+      <li><strong>Access</strong> — request a copy of the data we hold about you</li>
+      <li><strong>Rectification</strong> — correct any inaccurate data</li>
+      <li><strong>Erasure</strong> — request deletion of your data ("right to be forgotten")</li>
+      <li><strong>Restriction</strong> — ask us to limit how we use your data</li>
+      <li><strong>Portability</strong> — receive your data in a structured, machine-readable format</li>
+      <li><strong>Objection</strong> — object to processing based on legitimate interest</li>
+    </ul>
+    <p>
+      To exercise any of these rights, contact us at <a href="mailto:hello@parallel31.io">hello@parallel31.io</a>. We will respond within 30 days.
+    </p>
+
+    <h2>7. Supervisory authority</h2>
+    <p>
+      If you believe your data protection rights have been violated, you have the right to lodge a complaint with the Spanish data protection authority:
+    </p>
+
+    <div class="highlight-box">
+      <p>
+        <strong>Agencia Española de Protección de Datos (AEPD)</strong><br>
+        C/ Jorge Juan, 6 — 28001 Madrid<br>
+        <a href="https://www.aepd.es" target="_blank" rel="noopener">www.aepd.es</a>
+      </p>
+    </div>
+
+    <h2>8. Changes to this policy</h2>
+    <p>
+      We may update this Privacy Policy from time to time. Any significant changes will be reflected by updating the date at the top of this page. We encourage you to review it periodically.
+    </p>
+  </main>
+
+  <footer>
+    <span class="footer-brand-name">Parallel31</span>
+    <nav class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="legal-notice.html">Legal Notice</a>
+      <a href="mailto:hello@parallel31.io">hello@parallel31.io</a>
+    </nav>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legal Notice — Parallel31</title>
+  <meta name="description" content="Legal Notice for Parallel31. Registered information, intellectual property and liability.">
+  <meta name="robots" content="noindex, follow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400&family=Raleway:wght@300&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:           #F0EAE0;
+      --text:         #1A1610;
+      --text-muted:   #6D655C;
+      --text-dim:     #B5ADA4;
+      --accent:       #8C5F2C;
+      --border:       rgba(26, 22, 16, 0.10);
+      --border-light: rgba(26, 22, 16, 0.16);
+      --max:          760px;
+      --px:           clamp(22px, 5.5vw, 48px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ── */
+    .site-header {
+      padding: 40px var(--px) 40px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .brand-name {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: 22px;
+      color: var(--text);
+      letter-spacing: 0.01em;
+      text-decoration: none;
+    }
+    .brand-name:hover { text-decoration: none; }
+
+    .brand-sub {
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .back-link {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); text-decoration: none; }
+    .back-link::before {
+      content: '←';
+      font-size: 14px;
+    }
+
+    /* ── Content ── */
+    .content {
+      max-width: calc(var(--max) + var(--px) * 2);
+      margin: 0 auto;
+      padding: clamp(56px, 8vw, 96px) var(--px) clamp(80px, 12vw, 140px);
+    }
+
+    .page-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .page-label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.015em;
+      margin-bottom: 12px;
+    }
+
+    .page-meta {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: clamp(40px, 6vw, 64px);
+      padding-bottom: clamp(32px, 5vw, 48px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(20px, 2vw, 26px);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-top: 48px;
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    h2:first-of-type { margin-top: 0; }
+
+    p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.78;
+      margin-bottom: 16px;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      margin: 12px 0 16px 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    ul li {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.72;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    ul li::before {
+      content: '';
+      display: block;
+      width: 14px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.4;
+      flex-shrink: 0;
+      margin-top: 11px;
+    }
+
+    strong {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0 28px;
+      font-size: 14px;
+    }
+
+    .data-table td {
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      vertical-align: top;
+      line-height: 1.6;
+    }
+
+    .data-table td:first-child {
+      font-weight: 500;
+      color: var(--text);
+      width: 38%;
+      white-space: nowrap;
+      background: rgba(26, 22, 16, 0.02);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 36px var(--px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand-name {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: 18px;
+      color: var(--text);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .site-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .data-table td:first-child { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-brand">
+      <a href="index.html" class="brand-name">Parallel31</a>
+      <span class="brand-sub">Boutique AI Studio</span>
+    </div>
+    <a href="index.html" class="back-link">Back to home</a>
+  </header>
+
+  <main class="content">
+    <p class="page-label">Legal</p>
+    <h1 class="page-title">Legal Notice</h1>
+    <p class="page-meta">Last updated: May 2026 &nbsp;·&nbsp; Applies to parallel31.io</p>
+
+    <h2>1. Responsible party</h2>
+    <p>
+      In compliance with the Spanish Law 34/2002 on Information Society Services and Electronic Commerce (LSSI-CE), the following information is disclosed:
+    </p>
+
+    <table class="data-table">
+      <tr>
+        <td>Trading name</td>
+        <td>Parallel31</td>
+      </tr>
+      <tr>
+        <td>Legal name</td>
+        <td>Juan Pablo Alberca Lucas</td>
+      </tr>
+      <tr>
+        <td>NIF / NIE</td>
+        <td>09020143A</td>
+      </tr>
+      <tr>
+        <td>Registered address</td>
+        <td>Barcelona, Spain</td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td><a href="mailto:hello@parallel31.io">hello@parallel31.io</a></td>
+      </tr>
+      <tr>
+        <td>Website</td>
+        <td><a href="https://parallel31.io">parallel31.io</a></td>
+      </tr>
+    </table>
+
+    <h2>2. Purpose of the website</h2>
+    <p>
+      This website provides information about the professional services offered by Parallel31, a boutique AI studio specialising in generative AI solutions, workflow automation and AI-powered internal tools for businesses. The website also enables prospective clients to make contact via the enquiry form.
+    </p>
+
+    <h2>3. Intellectual property</h2>
+    <p>
+      All content published on this website — including but not limited to texts, design, layout, logos, graphics, and code — is the exclusive property of Parallel31 or its licensors, and is protected under applicable intellectual property law.
+    </p>
+    <p>
+      Reproduction, distribution, public communication or transformation of any part of this content without prior written authorisation is strictly prohibited. Any unauthorised use will be pursued to the full extent permitted by law.
+    </p>
+
+    <h2>4. Disclaimer of liability</h2>
+    <p>
+      Parallel31 makes every reasonable effort to ensure that the information published on this website is accurate and up to date. However, we cannot guarantee the completeness or accuracy of the content at all times, and we accept no liability for:
+    </p>
+    <ul>
+      <li>Errors or omissions in the information provided</li>
+      <li>Interruptions or unavailability of the website due to technical causes</li>
+      <li>Damages arising from the use or inability to use this website</li>
+      <li>Content on third-party websites linked from this site</li>
+    </ul>
+
+    <h2>5. Links to third-party websites</h2>
+    <p>
+      This website may contain links to external websites for informational purposes. Parallel31 has no control over, and accepts no responsibility for, the content, privacy practices or availability of those sites. The inclusion of any link does not imply endorsement.
+    </p>
+
+    <h2>6. Applicable law and jurisdiction</h2>
+    <p>
+      This Legal Notice is governed by Spanish law. For any disputes arising from the use of this website, the parties submit to the jurisdiction of the courts of Madrid, Spain, waiving any other jurisdiction that may apply.
+    </p>
+
+    <h2>7. Contact</h2>
+    <p>
+      For any queries related to this Legal Notice, please contact us at <a href="mailto:hello@parallel31.io">hello@parallel31.io</a>.
+    </p>
+  </main>
+
+  <footer>
+    <span class="footer-brand-name">Parallel31</span>
+    <nav class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="mailto:hello@parallel31.io">hello@parallel31.io</a>
+    </nav>
+  </footer>
+
+</body>
+</html>

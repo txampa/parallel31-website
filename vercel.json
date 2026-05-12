@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/hotels/vibra-demo/:path*",
+      "destination": "https://vibra-hotel-brain-production.up.railway.app/:path*"
+    }
+  ]
+}

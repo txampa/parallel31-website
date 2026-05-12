@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parallel31 — AI Systems for Modern Businesses</title>
+  <meta name="description" content="Parallel31 designs and integrates generative AI solutions, automation workflows and AI-powered internal tools for measurable business impact.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://parallel31.io">
+  <meta property="og:title" content="Parallel31 — AI Systems for Modern Businesses">
+  <meta property="og:description" content="Parallel31 designs and integrates generative AI solutions, automation workflows and AI-powered internal tools for measurable business impact.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://parallel31.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Parallel31 — AI Systems for Modern Businesses">
+  <meta name="twitter:description" content="Parallel31 designs and integrates generative AI solutions, automation workflows and AI-powered internal tools for measurable business impact.">
+
+  <!-- Cormorant Garamond (headlines) + DM Sans (body/UI) + Raleway (logo wordmark) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&family=Raleway:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ────────────────────────────────────────────
+       VARIABLES — warm off-white / cream light theme
+    ──────────────────────────────────────────── */
+    :root {
+      --bg:           #F0EAE0;
+      --surface:      #E9E2D7;
+      --surface-2:    #E0D8CB;
+      --surface-hover:#D8CFBF;
+      --text:         #1A1610;
+      --text-muted:   #6D655C;
+      --text-dim:     #B5ADA4;
+      --accent:       #8C5F2C;
+      --accent-light: rgba(140, 95, 44, 0.09);
+      --border:       rgba(26, 22, 16, 0.10);
+      --border-light: rgba(26, 22, 16, 0.16);
+      --max:          1120px;
+      --px:           clamp(22px, 5.5vw, 88px);
+    }
+
+    /* ────────────────────────────────────────────
+       RESET
+    ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* Subtle vertical grid — parallel line motif */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent calc((100vw - 1px) / 12 - 1px),
+        rgba(26, 22, 16, 0.032) calc((100vw - 1px) / 12 - 1px),
+        rgba(26, 22, 16, 0.032) calc((100vw - 1px) / 12)
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ────────────────────────────────────────────
+       LAYOUT
+    ──────────────────────────────────────────── */
+    .wrap {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 var(--px);
+      position: relative;
+      z-index: 1;
+    }
+    section { position: relative; z-index: 1; }
+
+    /* ────────────────────────────────────────────
+       TYPOGRAPHY
+    ──────────────────────────────────────────── */
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      line-height: 1.08;
+      letter-spacing: -0.015em;
+      color: var(--text);
+    }
+
+    /* ────────────────────────────────────────────
+       SCROLL ANIMATIONS
+    ──────────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up[data-d="1"] { transition-delay: 0.08s; }
+    .fade-up[data-d="2"] { transition-delay: 0.16s; }
+    .fade-up[data-d="3"] { transition-delay: 0.24s; }
+    .fade-up[data-d="4"] { transition-delay: 0.32s; }
+    .fade-up[data-d="5"] { transition-delay: 0.40s; }
+    .fade-up[data-d="6"] { transition-delay: 0.48s; }
+
+    /* ────────────────────────────────────────────
+       SHARED: section label
+    ──────────────────────────────────────────── */
+    .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 22px;
+    }
+    .label::before {
+      content: '';
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ────────────────────────────────────────────
+       1. HERO
+    ──────────────────────────────────────────── */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero > .wrap {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding-top: 52px;
+      padding-bottom: 72px;
+    }
+
+    /* Ghost "31" watermark */
+    .hero-mark {
+      position: absolute;
+      right: -0.04em;
+      bottom: -0.12em;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(220px, 34vw, 520px);
+      font-weight: 700;
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(26, 22, 16, 0.055);
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.04em;
+      z-index: 0;
+    }
+
+
+    /* ── Logo wordmark ── */
+    /* NOTE: Replace with <img src="logo.png" alt="Parallel31"> when you have the file */
+    .hero-logo {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: auto;
+      padding-bottom: clamp(64px, 12vh, 140px);
+    }
+    .logo-name {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: clamp(30px, 4vw, 44px);
+      letter-spacing: 0.01em;
+      color: var(--text);
+      line-height: 1;
+      display: block;
+    }
+    .logo-sub {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 7px;
+    }
+
+    /* ── Hero body ── */
+    .hero-body {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 26px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hero h1 {
+      font-size: clamp(52px, 8.5vw, 112px);
+      font-weight: 600;
+      margin-bottom: 32px;
+      color: var(--text);
+    }
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 1.6vw, 17px);
+      color: var(--text-muted);
+      line-height: 1.78;
+      font-weight: 300;
+    }
+
+    /* ── Hero footer strip ── */
+    .hero-foot {
+      position: relative;
+      z-index: 1;
+      padding-top: 40px;
+      margin-top: 60px;
+    }
+    .hero-strip {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .strip-item {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(17px, 1.6vw, 22px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .strip-div {
+      flex: 1;
+      height: 1px;
+      background: var(--border-light);
+      margin: 0 20px;
+    }
+
+    /* ────────────────────────────────────────────
+       2. SERVICES
+    ──────────────────────────────────────────── */
+    .services {
+      padding: clamp(80px, 11vw, 130px) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .services-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 52px;
+      flex-wrap: wrap;
+    }
+
+    .services-header h2 {
+      font-size: clamp(28px, 3.6vw, 48px);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .services-count {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      padding-bottom: 6px;
+      white-space: nowrap;
+    }
+
+    /* Gap trick → clean inner borders */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .service-card {
+      background: var(--bg);
+      padding: 38px 32px 46px;
+      transition: background 0.35s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .service-card:hover { background: var(--surface-hover); }
+    .service-card:hover::after { opacity: 1; }
+
+    .card-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      color: var(--text-dim);
+      display: block;
+      margin-bottom: 34px;
+    }
+
+    .service-card h3 {
+      font-size: clamp(21px, 2.1vw, 26px);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .service-card > p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.72;
+      margin-bottom: 28px;
+      font-weight: 300;
+    }
+
+    .service-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .service-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 300;
+    }
+    .service-list li::before {
+      content: '';
+      display: block;
+      width: 14px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+
+    /* ────────────────────────────────────────────
+       3. PHILOSOPHY
+    ──────────────────────────────────────────── */
+    .philosophy {
+      padding: clamp(80px, 11vw, 130px) 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .philosophy::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 35%;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent 0px,
+        transparent 17px,
+        rgba(26, 22, 16, 0.028) 17px,
+        rgba(26, 22, 16, 0.028) 18px
+      );
+      pointer-events: none;
+    }
+
+    .philosophy-inner { max-width: 700px; }
+
+    .philosophy h2 {
+      font-size: clamp(30px, 4.8vw, 62px);
+      font-weight: 600;
+      font-style: italic;
+      margin-bottom: 40px;
+    }
+
+    .philosophy p {
+      font-size: clamp(15px, 1.55vw, 17px);
+      color: var(--text-muted);
+      line-height: 1.82;
+      max-width: 580px;
+      font-weight: 300;
+    }
+    .philosophy p + p { margin-top: 20px; }
+
+    /* ────────────────────────────────────────────
+       4. CLIENTS
+    ──────────────────────────────────────────── */
+    .clients {
+      padding: clamp(80px, 11vw, 130px) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .clients-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 52px;
+      flex-wrap: wrap;
+    }
+
+    .clients-header h2 {
+      font-size: clamp(28px, 3.4vw, 44px);
+      font-weight: 600;
+    }
+
+    .clients-note {
+      font-size: 13px;
+      color: var(--text-dim);
+      font-weight: 300;
+      max-width: 280px;
+      text-align: right;
+      line-height: 1.6;
+      padding-bottom: 4px;
+    }
+
+    .clients-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .client-block {
+      background: var(--bg);
+      padding: 36px 28px 40px;
+      transition: background 0.3s ease;
+      position: relative;
+    }
+    .client-block:hover { background: var(--surface); }
+
+    .client-icon {
+      display: block;
+      margin-bottom: 20px;
+    }
+    .client-icon svg {
+      width: 20px;
+      height: 20px;
+      opacity: 0.6;
+    }
+
+    .client-block h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(20px, 1.9vw, 24px);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .client-block p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ────────────────────────────────────────────
+       5. OUTCOMES
+    ──────────────────────────────────────────── */
+    .outcomes {
+      padding: clamp(80px, 11vw, 130px) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .outcomes-header { margin-bottom: 48px; }
+    .outcomes-header h2 {
+      font-size: clamp(26px, 3.3vw, 42px);
+      font-weight: 600;
+    }
+
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .outcome-block {
+      background: var(--bg);
+      padding: 30px 24px 36px;
+      transition: background 0.3s ease;
+    }
+    .outcome-block:hover { background: var(--surface); }
+
+    .outcome-icon {
+      display: block;
+      width: 20px;
+      height: 20px;
+      margin-bottom: 20px;
+      opacity: 0.65;
+    }
+
+    .outcome-block h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(17px, 1.6vw, 20px);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .outcome-block p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ────────────────────────────────────────────
+       6. PROCESS
+    ──────────────────────────────────────────── */
+    .process {
+      padding: clamp(80px, 11vw, 130px) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .process-header { margin-bottom: 68px; }
+    .process-header h2 {
+      font-size: clamp(26px, 3.3vw, 42px);
+      font-weight: 600;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 8px; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--border) 60%, transparent 100%);
+    }
+
+    .step {
+      padding-top: 44px;
+      padding-right: 36px;
+      position: relative;
+    }
+    .step::before {
+      content: '';
+      position: absolute;
+      top: 5px; left: 0;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px rgba(140,95,44,0.22);
+    }
+
+    .step-num {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .step h4 {
+      font-size: clamp(19px, 1.9vw, 23px);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .step p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ────────────────────────────────────────────
+       7. CONTACT FORM
+    ──────────────────────────────────────────── */
+    .contact {
+      padding: clamp(80px, 12vw, 150px) 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Horizontal lines texture behind form */
+    .contact::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent 0px,
+        transparent 23px,
+        rgba(26, 22, 16, 0.022) 23px,
+        rgba(26, 22, 16, 0.022) 24px
+      );
+      pointer-events: none;
+    }
+
+    /* Ghost 31 behind form */
+    .contact::after {
+      content: '31';
+      position: absolute;
+      right: -0.06em;
+      bottom: -0.18em;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(180px, 26vw, 400px);
+      font-weight: 700;
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(26, 22, 16, 0.04);
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.04em;
+    }
+
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(48px, 8vw, 100px);
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .contact-text {}
+
+    .contact-text h2 {
+      font-size: clamp(30px, 4vw, 52px);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .contact-text p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      font-weight: 300;
+      max-width: 360px;
+    }
+
+    .contact-detail {
+      margin-top: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .contact-detail a {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 300;
+      transition: color 0.2s ease;
+    }
+    .contact-detail a:hover { color: var(--accent); }
+
+    .contact-detail .cd-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+      margin-top: 16px;
+      display: block;
+    }
+    .contact-detail .cd-label:first-child { margin-top: 0; }
+
+    /* Form */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-field label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .form-field input,
+    .form-field textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid var(--border-light);
+      padding: 13px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text);
+      transition: border-color 0.25s ease, background 0.25s ease;
+      outline: none;
+      -webkit-appearance: none;
+      border-radius: 0;
+      resize: none;
+    }
+
+    .form-field input::placeholder,
+    .form-field textarea::placeholder {
+      color: var(--text-dim);
+    }
+
+    .form-field input:focus,
+    .form-field textarea:focus {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    .form-field textarea { min-height: 130px; }
+
+    .form-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 32px;
+      background: var(--text);
+      color: var(--bg);
+      border: 1px solid var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+      border-radius: 0;
+      align-self: flex-start;
+    }
+    .form-submit:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    .form-note {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 300;
+    }
+
+    /* ────────────────────────────────────────────
+       FOOTER
+    ──────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      position: relative;
+      z-index: 1;
+      background: var(--bg);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand { display: flex; align-items: baseline; gap: 14px; }
+
+    .footer-name {
+      font-family: 'Raleway', sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+
+    .footer-tagline {
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .footer-right { display: flex; align-items: center; gap: 28px; }
+
+    .footer-right a {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 300;
+      transition: color 0.2s ease;
+    }
+    .footer-right a:hover { color: var(--accent); }
+
+    /* ────────────────────────────────────────────
+       RESPONSIVE
+    ──────────────────────────────────────────── */
+    @media (max-width: 1000px) {
+      .clients-grid { grid-template-columns: repeat(2, 1fr); }
+      .outcomes-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 900px) {
+      .services-grid { grid-template-columns: 1fr; }
+      .services-header h2 { white-space: normal; }
+
+      .steps {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 48px 36px;
+      }
+      .steps::before { display: none; }
+      .step { padding-top: 0; }
+      .step::before { display: none; }
+
+      .contact-inner { grid-template-columns: 1fr; gap: 52px; }
+      .contact-text p { max-width: 100%; }
+    }
+
+    @media (max-width: 640px) {
+      :root { --px: 20px; }
+
+      .hero { padding: 40px 0 56px; }
+      .hero-lines { display: none; }
+
+      .clients-grid { grid-template-columns: 1fr; }
+      .outcomes-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 40px; }
+
+      .form-row { grid-template-columns: 1fr; }
+
+      .hero-foot { flex-direction: column; align-items: flex-start; gap: 16px; }
+
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .footer-brand { flex-direction: column; gap: 6px; }
+      .footer-right { gap: 18px; }
+
+      .philosophy::after { display: none; }
+      .clients-header { flex-direction: column; }
+      .clients-note { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ──────────────── 1. HERO ──────────────── -->
+  <section class="hero">
+    <div class="hero-mark" aria-hidden="true">31</div>
+    <div class="wrap">
+      <!-- Logo wordmark — replace with <img src="logo.png" alt="Parallel31"> if you have the file -->
+      <div class="hero-logo fade-up">
+        <span class="logo-name">Parallel31</span>
+        <span class="logo-sub">Boutique AI Studio</span>
+      </div>
+
+      <div class="hero-body">
+        <p class="hero-eyebrow fade-up" data-d="1">AI Systems &amp; Automation Studio</p>
+        <h1 class="fade-up" data-d="2">
+          AI systems for<br><em>modern businesses.</em>
+        </h1>
+        <p class="hero-sub fade-up" data-d="3">
+          We design and integrate practical AI systems, workflow automations and internal tools that help modern businesses increase revenue, reduce operational costs, accelerate execution and improve customer experience.
+        </p>
+      </div>
+
+      <div class="hero-foot fade-up" data-d="4">
+        <div class="hero-strip">
+          <span class="strip-item">Automation</span>
+          <span class="strip-div" aria-hidden="true"></span>
+          <span class="strip-item">Agents</span>
+          <span class="strip-div" aria-hidden="true"></span>
+          <span class="strip-item">Business Workflows</span>
+          <span class="strip-div" aria-hidden="true"></span>
+          <span class="strip-item">AI Consulting</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────── 2. SERVICES ──────────────── -->
+  <section class="services">
+    <div class="wrap">
+      <div class="services-header fade-up">
+        <div>
+          <p class="label">Services</p>
+          <h2>What we build for you.</h2>
+        </div>
+        <span class="services-count">— 3 core offerings</span>
+      </div>
+
+      <div class="services-grid">
+        <article class="service-card fade-up" data-d="1">
+          <span class="card-num">01</span>
+          <h3>AI Automation &amp; Workflows</h3>
+          <p>We automate repetitive workflows, internal operations and customer-facing processes using practical AI systems.</p>
+          <ul class="service-list">
+            <li>Workflow automation</li>
+            <li>AI agents and copilots</li>
+            <li>Customer support automation</li>
+            <li>Reporting and document processing</li>
+          </ul>
+        </article>
+
+        <article class="service-card fade-up" data-d="2">
+          <span class="card-num">02</span>
+          <h3>AI Strategy &amp; Consulting</h3>
+          <p>We help companies identify where AI can create real business value, then turn that into a clear execution roadmap.</p>
+          <ul class="service-list">
+            <li>AI opportunity mapping</li>
+            <li>Process audits</li>
+            <li>AI transformation roadmap</li>
+            <li>Tool selection and governance</li>
+          </ul>
+        </article>
+
+        <article class="service-card fade-up" data-d="3">
+          <span class="card-num">03</span>
+          <h3>AI Prototyping &amp; Internal Tools</h3>
+          <p>We build fast, useful AI-powered prototypes and internal tools that help teams move from idea to working system.</p>
+          <ul class="service-list">
+            <li>AI apps and dashboards</li>
+            <li>Internal copilots</li>
+            <li>Data enrichment tools</li>
+            <li>MVPs and proof of concepts</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────── 3. PHILOSOPHY ──────────────── -->
+  <section class="philosophy">
+    <div class="wrap">
+      <div class="philosophy-inner">
+        <p class="label fade-up">Philosophy</p>
+        <h2 class="fade-up" data-d="1">AI is not the goal.<br>Better business performance is.</h2>
+        <div class="fade-up" data-d="2">
+          <p>Parallel31 helps companies turn AI from abstract potential into operational advantage. We combine business understanding, technical execution and automation expertise to design systems that save time, reduce manual work, improve decision-making and create new growth opportunities.</p>
+          <p>Whether you are exploring AI for the first time or scaling existing workflows, we work hands-on from strategy to implementation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────── 4. CLIENTS ──────────────── -->
+  <section class="clients">
+    <div class="wrap">
+      <div class="clients-header fade-up">
+        <div>
+          <p class="label">Who we work with</p>
+          <h2>Industries we serve.</h2>
+        </div>
+        <p class="clients-note">Practical AI systems designed for the specific workflows and challenges of each sector.</p>
+      </div>
+
+      <div class="clients-grid">
+        <div class="client-block fade-up" data-d="1">
+          <span class="client-icon">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="2" y="8" width="16" height="10" stroke="#8C5F2C" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 8V6a5 5 0 0110 0v2" stroke="#8C5F2C" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="13" width="4" height="5" stroke="#8C5F2C" stroke-width="1"/>
+            </svg>
+          </span>
+          <h4>Hotels</h4>
+          <p>Automate guest communications, pricing workflows, booking operations and internal reporting with AI.</p>
+        </div>
+
+        <div class="client-block fade-up" data-d="2">
+          <span class="client-icon">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="7" cy="16" r="1.5" stroke="#8C5F2C" stroke-width="1"/>
+              <circle cx="14" cy="16" r="1.5" stroke="#8C5F2C" stroke-width="1"/>
+              <path d="M1 2h2l2.5 9h8L16 6H5" stroke="#8C5F2C" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <h4>E-commerce</h4>
+          <p>AI systems for product discovery, customer support, inventory intelligence and conversion optimization.</p>
+        </div>
+
+        <div class="client-block fade-up" data-d="3">
+          <span class="client-icon">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M3 17V8l7-5 7 5v9" stroke="#8C5F2C" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="7" y="11" width="6" height="6" stroke="#8C5F2C" stroke-width="1"/>
+              <path d="M7 8h6" stroke="#8C5F2C" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h4>Restaurants</h4>
+          <p>Streamline reservations, staff operations and customer interactions with targeted AI automation.</p>
+        </div>
+
+        <div class="client-block fade-up" data-d="4">
+          <span class="client-icon">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="2" y="5" width="16" height="12" rx="1" stroke="#8C5F2C" stroke-width="1"/>
+              <path d="M6 5V4a2 2 0 014 0v1M6 11h3M6 14h8M11 11h3" stroke="#8C5F2C" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h4>Medium Business</h4>
+          <p>End-to-end AI integration for growing companies ready to scale operations and unlock new efficiency.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────── 5. OUTCOMES ──────────────── -->
+  <section class="outcomes">
+    <div class="wrap">
+      <div class="outcomes-header fade-up">
+        <p class="label">Impact</p>
+        <h2>Built for measurable outcomes.</h2>
+      </div>
+
+      <div class="outcomes-grid">
+        <div class="outcome-block fade-up" data-d="1">
+          <svg class="outcome-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <polyline points="2,15 6,9 10,12 14,6 18,9" stroke="#8C5F2C" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="18" y1="6" x2="18" y2="9" stroke="#8C5F2C" stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="15" y1="6" x2="18" y2="6" stroke="#8C5F2C" stroke-width="1.1" stroke-linecap="round"/>
+          </svg>
+          <h4>Increase revenue</h4>
+          <p>Find new opportunities, improve conversion and accelerate commercial workflows.</p>
+        </div>
+
+        <div class="outcome-block fade-up" data-d="2">
+          <svg class="outcome-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="10" cy="10" r="7" stroke="#8C5F2C" stroke-width="1.1"/>
+            <polyline points="10,6 10,10 13,13" stroke="#8C5F2C" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h4>Reduce costs</h4>
+          <p>Automate manual work and remove repetitive operational drag from your teams.</p>
+        </div>
+
+        <div class="outcome-block fade-up" data-d="3">
+          <svg class="outcome-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M10 3C6.69 3 4 5.69 4 9c0 2.07 1.01 3.9 2.56 5.05V16h6.88v-1.95A7 7 0 0016 9c0-3.31-2.69-6-6-6z" stroke="#8C5F2C" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="7" y1="18" x2="13" y2="18" stroke="#8C5F2C" stroke-width="1.1" stroke-linecap="round"/>
+          </svg>
+          <h4>Better CX</h4>
+          <p>Build faster, smarter and more useful customer interactions at scale.</p>
+        </div>
+
+        <div class="outcome-block fade-up" data-d="4">
+          <svg class="outcome-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <line x1="2" y1="10" x2="18" y2="10" stroke="#8C5F2C" stroke-width="1.1" stroke-linecap="round"/>
+            <polyline points="13,5 18,10 13,15" stroke="#8C5F2C" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="2" y1="5" x2="2" y2="15" stroke="#8C5F2C" stroke-width="1.1" stroke-linecap="round"/>
+          </svg>
+          <h4>Accelerate operations</h4>
+          <p>Give teams AI-powered tools that make execution faster and sharper.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────── 6. PROCESS ──────────────── -->
+  <section class="process">
+    <div class="wrap">
+      <div class="process-header fade-up">
+        <p class="label">How we work</p>
+        <h2>From idea to working system.</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step fade-up" data-d="1">
+          <span class="step-num">01</span>
+          <h4>Discover</h4>
+          <p>We map your workflows, bottlenecks and business goals to find where AI creates the most value.</p>
+        </div>
+        <div class="step fade-up" data-d="2">
+          <span class="step-num">02</span>
+          <h4>Design</h4>
+          <p>We define the right AI use cases, tools and architecture tailored to your business.</p>
+        </div>
+        <div class="step fade-up" data-d="3">
+          <span class="step-num">03</span>
+          <h4>Build</h4>
+          <p>We prototype, integrate and automate the system end-to-end, hands-on.</p>
+        </div>
+        <div class="step fade-up" data-d="4">
+          <span class="step-num">04</span>
+          <h4>Improve</h4>
+          <p>We measure results, refine workflows and scale what works across the business.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────── 7. CONTACT FORM ──────────────── -->
+  <section class="contact">
+    <div class="wrap">
+      <div class="contact-inner">
+
+        <div class="contact-text fade-up">
+          <p class="label">Contact</p>
+          <h2>Let's build something that works.</h2>
+          <p>Tell us about your business and where you think AI could make a difference. We'll get back to you within 24 hours.</p>
+
+          <div class="contact-detail">
+            <span class="cd-label">Email</span>
+            <a href="mailto:hello@parallel31.io">hello@parallel31.io</a>
+            <span class="cd-label">Website</span>
+            <a href="https://parallel31.io">parallel31.io</a>
+          </div>
+        </div>
+
+        <!-- FormSubmit.co — free, no signup, forwards to your email -->
+        <form
+          class="contact-form fade-up"
+          data-d="2"
+          action="https://formsubmit.co/hello@parallel31.io"
+          method="POST"
+        >
+          <!-- FormSubmit config -->
+          <input type="hidden" name="_subject" value="New enquiry — Parallel31.io">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_next" value="https://www.parallel31.io">
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Your full name" required>
+            </div>
+            <div class="form-field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Tell us about your business and what you'd like to automate or improve with AI…" required></textarea>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+            <button type="submit" class="form-submit">Send message →</button>
+            <span class="form-note">We reply within 24 hours.</span>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────── FOOTER ──────────────── -->
+  <footer>
+    <div class="wrap">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="footer-name">Parallel31</span>
+          <span class="footer-tagline">Boutique AI Studio</span>
+        </div>
+        <div class="footer-right">
+          <a href="privacy-policy.html">Privacy Policy</a>
+          <a href="legal-notice.html">Legal Notice</a>
+          <a href="mailto:hello@parallel31.io">hello@parallel31.io</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Intersection observer — fade-up on scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+    // Hero animates immediately
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.hero .fade-up').forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * 100);
+      });
+    });
+  </script>
+</body>
+</html>
