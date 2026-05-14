@@ -3,6 +3,10 @@
     {
       "source": "/hotels/vibra-demo/:path*",
       "destination": "https://vibra-hotel-brain-production.up.railway.app/:path*"
+    },
+    {
+      "source": "/hotels/od-hotels-demo/:path*",
+      "destination": "https://od-hotel-brain-production.up.railway.app/:path*"
     }
   ]
 }
