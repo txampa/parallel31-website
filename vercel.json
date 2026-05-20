@@ -7,6 +7,18 @@
     {
       "source": "/hotels/od-hotels-demo/:path*",
       "destination": "https://od-hotel-brain-production.up.railway.app/:path*"
+    },
+    {
+      "source": "/hotels/insotel-demo/:path*",
+      "destination": "https://insotel-hotel-os-production.up.railway.app/:path*"
+    },
+    {
+      "source": "/hotels/can-lluc-demo/:path*",
+      "destination": "https://can-lluc-hotel-os-production.up.railway.app/:path*"
+    },
+    {
+      "source": "/ecommerce/youin-demo/:path*",
+      "destination": "https://youin-brain-production.up.railway.app/:path*"
     }
   ]
 }
