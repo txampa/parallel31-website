@@ -340,9 +340,40 @@ body {
 .menu-item:last-child { border-bottom: none; }
 .menu-item:hover { background: var(--card-hover); }
 .menu-item.danger { color: var(--danger); }
+
+/* Login */
+.login-wrap {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 16px; padding: 40px 20px;
+  max-width: 360px; margin: 0 auto; width: 100%;
+}
+.login-logo { font-size: 44px; line-height: 1; margin-bottom: 4px; }
+.login-title { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+.login-subtitle { font-size: 13px; color: var(--text-3); margin-top: -4px; margin-bottom: 8px; }
+.login-email-display {
+  width: 100%; background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text-2); padding: 13px 14px;
+  font-size: 14px; font-family: var(--font-mono); text-align: center;
+}
+.login-sent { font-size: 14px; color: var(--accent); text-align: center; line-height: 1.8; }
 </style>
 </head>
 <body>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen hidden">
+  <div class="login-wrap">
+    <div class="login-logo">⏱</div>
+    <div class="login-title">Time Tracker</div>
+    <div class="login-subtitle">Acceso privado</div>
+    <div class="login-email-display">txampaback@gmail.com</div>
+    <button class="btn-primary" id="btn-magic-link" style="width:100%">Enviar enlace de acceso</button>
+    <div id="login-sent" class="login-sent hidden">
+      Enlace enviado ✓<br>
+      <span style="color:var(--text-3);font-size:13px">Revisa tu email y haz click en el enlace</span>
+    </div>
+  </div>
+</div>
 
 <!-- LOADING -->
 <div id="screen-loading" class="screen">
@@ -878,9 +909,32 @@ function exportCSV() {
   URL.revokeObjectURL(url)
 }
 
+// ── Auth ──────────────────────────────────────────────
+document.getElementById('btn-magic-link').onclick = async () => {
+  const btn = document.getElementById('btn-magic-link')
+  btn.disabled = true; btn.textContent = 'Enviando...'
+  const { error } = await sb.auth.signInWithOtp({
+    email: 'txampaback@gmail.com',
+    options: { emailRedirectTo: window.location.href }
+  })
+  if (error) {
+    showToast('Error enviando el enlace')
+    btn.disabled = false; btn.textContent = 'Enviar enlace de acceso'
+  } else {
+    document.getElementById('login-sent').classList.remove('hidden')
+    btn.textContent = 'Enlace enviado'
+  }
+}
+
+sb.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_IN') init()
+})
+
 // ── Init ──────────────────────────────────────────────
 async function init() {
   showScreen('loading')
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) { showScreen('login'); return }
   try {
     const [{ data: clients, error: e1 }, { data: sessions, error: e2 }] = await Promise.all([
       sb.from('clients').select('*').order('created_at'),
