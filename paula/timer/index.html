@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F7F4EF">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Time Tracker</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:           #F7F4EF;
+  --card:         #FFFDFC;
+  --card-hover:   #F0EBE4;
+  --border:       #E7E1D8;
+  --accent:       #5D496E;
+  --accent-dim:   rgba(93,73,110,0.09);
+  --accent-border:rgba(93,73,110,0.20);
+  --pause:        #C98FA1;
+  --pause-dim:    rgba(201,143,161,0.12);
+  --pause-border: rgba(201,143,161,0.30);
+  --danger:       #A0445A;
+  --danger-dim:   rgba(160,68,90,0.08);
+  --danger-border:rgba(160,68,90,0.22);
+  --text:         #2B2725;
+  --text-2:       #6F6762;
+  --text-3:       #A59D96;
+  --timer-run:    #9E8CBF;
+  --font-ui:      'DM Sans', system-ui, sans-serif;
+  --font-mono:    'DM Mono', 'Courier New', monospace;
+  --r:            16px;
+  --r-sm:         10px;
+  --safe-b:       env(safe-area-inset-bottom, 0px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 0 16px calc(32px + var(--safe-b));
+}
+.screen.hidden { display: none !important; }
+
+/* Loading */
+.loading-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2.5px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-label { font-size: 14px; color: var(--text-3); }
+
+/* Toast */
+#toast {
+  position: fixed;
+  bottom: calc(20px + var(--safe-b));
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: #2B2725;
+  color: #F0A0B4;
+  border: 1px solid rgba(160,68,90,0.35);
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 14px;
+  z-index: 400;
+  transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+  white-space: nowrap;
+  pointer-events: none;
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Header */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 16px;
+  flex-shrink: 0;
+}
+.app-header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+
+.btn-icon {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-2);
+  padding: 9px 10px;
+  cursor: pointer;
+  font-size: 0;
+  line-height: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-icon:hover { background: var(--card-hover); color: var(--text); }
+
+.btn-new-client {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 9px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: opacity 0.15s;
+}
+.btn-new-client:hover { opacity: 0.85; }
+
+.btn-back {
+  background: none;
+  border: none;
+  color: var(--text-2);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s;
+}
+.btn-back:hover { color: var(--text); }
+
+/* Client Grid */
+#clients-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  flex: 1;
+  align-content: start;
+  padding-top: 4px;
+}
+@media (min-width: 460px) { #clients-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.client-card {
+  background: var(--card);
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: background 0.15s, opacity 0.25s, transform 0.25s;
+}
+.client-card:hover { background: var(--card-hover); }
+.client-card.archived { opacity: 0.45; }
+.client-card.card-anim-init { opacity: 0; transform: scale(0.94) translateY(6px); }
+
+.card-color-strip { height: 3px; width: 100%; flex-shrink: 0; }
+.card-content { padding: 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 4px; }
+.card-name { font-size: 14px; font-weight: 600; line-height: 1.3; flex: 1; word-break: break-word; }
+.card-menu-btn {
+  background: none; border: none; color: var(--text-3); cursor: pointer;
+  font-size: 18px; padding: 0 0 0 4px; line-height: 1;
+  transition: color 0.15s; flex-shrink: 0; margin-top: -2px;
+}
+.card-menu-btn:hover { color: var(--text-2); }
+.card-total { font-size: 22px; font-weight: 500; color: var(--text-2); font-family: var(--font-mono); letter-spacing: -0.5px; }
+
+.btn-start {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  margin-top: auto;
+  text-align: center;
+}
+.btn-start:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.archived-badge { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: auto; }
+
+.empty-state { grid-column: 1/-1; text-align: center; padding: 80px 20px; color: var(--text-3); line-height: 2; font-size: 15px; }
+.empty-state strong { color: var(--text-2); }
+
+#archived-toggle { padding: 16px 0 0; }
+#archived-toggle button {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-3); padding: 8px 14px; font-size: 13px;
+  cursor: pointer; font-family: var(--font-ui); transition: color 0.15s, border-color 0.15s; width: 100%;
+}
+#archived-toggle button:hover { color: var(--text-2); border-color: var(--text-3); }
+
+/* Timer Screen */
+.timer-client-area { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 24px 0 20px; }
+#timer-client-strip { width: 40px; height: 3px; border-radius: 2px; }
+#timer-client-name { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+
+.timer-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 16px 0 32px; }
+#timer-clock {
+  font-family: var(--font-mono);
+  font-size: clamp(56px, 16vw, 84px);
+  font-weight: 400; color: var(--timer-run);
+  letter-spacing: -2px; transition: color 0.3s; line-height: 1;
+}
+.timer-wrap.paused #timer-clock { color: var(--pause); }
+
+.timer-pulse { width: 180px; height: 2px; background: var(--border); border-radius: 1px; overflow: hidden; }
+.timer-pulse-fill {
+  height: 100%; background: var(--timer-run); border-radius: 1px;
+  animation: pulse-run 2s ease-in-out infinite; transition: background 0.3s;
+}
+.timer-wrap.paused .timer-pulse-fill { animation: none; background: var(--pause); width: 100%; opacity: 0.4; }
+@keyframes pulse-run {
+  0%   { width: 10%; margin-left: 0%; opacity: 0.5; }
+  50%  { width: 60%; margin-left: 20%; opacity: 1; }
+  100% { width: 10%; margin-left: 90%; opacity: 0.5; }
+}
+#timer-today-label { font-size: 13px; color: var(--text-3); font-family: var(--font-mono); min-height: 18px; }
+
+.timer-buttons { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+#btn-pause-resume {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--r);
+  color: var(--text); padding: 17px; font-size: 16px; font-weight: 600;
+  cursor: pointer; font-family: var(--font-ui); transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+#btn-pause-resume:hover { background: var(--card-hover); }
+#btn-pause-resume.paused { background: var(--pause-dim); border-color: var(--pause-border); color: var(--pause); }
+#btn-pause-resume.paused:hover { background: rgba(201,143,161,0.22); }
+#btn-stop {
+  background: var(--danger-dim); border: 1px solid var(--danger-border); border-radius: var(--r);
+  color: var(--danger); padding: 17px; font-size: 16px; font-weight: 600;
+  cursor: pointer; font-family: var(--font-ui); transition: background 0.15s;
+}
+#btn-stop:hover { background: rgba(160,68,90,0.15); }
+
+/* Analytics */
+.analytics-header { display: flex; align-items: center; gap: 12px; padding: 20px 0 16px; flex-shrink: 0; }
+.analytics-header h2 { font-size: 20px; font-weight: 700; flex: 1; }
+.tab-bar { display: flex; background: var(--card); border-radius: var(--r-sm); padding: 4px; gap: 2px; flex-shrink: 0; border: 1px solid var(--border); }
+.tab { flex: 1; background: none; border: none; color: var(--text-3); padding: 8px 4px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font-ui); border-radius: 7px; transition: background 0.15s, color 0.15s; }
+.tab.active { background: var(--card-hover); color: var(--text); }
+.analytics-total-wrap { text-align: center; padding: 28px 0 32px; }
+.analytics-total-label { font-size: 12px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.analytics-total-value { font-size: 52px; font-weight: 700; font-family: var(--font-mono); color: var(--accent); letter-spacing: -2px; line-height: 1; }
+.analytics-total-value.empty { color: var(--text-3); font-size: 36px; }
+.analytics-client-row { margin-bottom: 18px; }
+.analytics-client-info { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.color-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.analytics-client-name { flex: 1; font-size: 14px; font-weight: 600; }
+.analytics-client-time { font-size: 14px; font-weight: 500; font-family: var(--font-mono); color: var(--text-2); }
+.analytics-bar-bg { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.analytics-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); min-width: 4px; }
+.section-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.8px; margin: 28px 0 12px; }
+.session-row { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.session-client { flex: 1; font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.session-date { font-size: 12px; color: var(--text-3); flex-shrink: 0; }
+.session-duration { font-size: 13px; font-weight: 500; font-family: var(--font-mono); color: var(--text-2); flex-shrink: 0; min-width: 44px; text-align: right; }
+.no-data { color: var(--text-3); font-size: 14px; padding: 12px 0; }
+
+/* Modal */
+#modal-overlay {
+  position: fixed; inset: 0; background: rgba(43,39,37,0.45);
+  z-index: 200; display: flex; align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+#modal-overlay.hidden { display: none !important; }
+#modal-sheet {
+  background: #F5F0EB; border-radius: 22px 22px 0 0;
+  width: 100%; max-width: 580px;
+  padding: 8px 20px calc(24px + var(--safe-b));
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32,0.72,0,1);
+  border-top: 1px solid var(--border);
+}
+#modal-sheet.open { transform: translateY(0); }
+.modal-drag { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 8px auto 20px; }
+.modal-header { margin-bottom: 18px; }
+.modal-header h3 { font-size: 17px; font-weight: 700; }
+.modal-color-dot { width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 18px; border: 3px solid rgba(0,0,0,0.08); }
+#modal-sheet input[type="text"] {
+  width: 100%; background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text); font-family: var(--font-ui);
+  font-size: 16px; padding: 13px 14px; margin-bottom: 16px;
+  outline: none; transition: border-color 0.15s; -webkit-appearance: none;
+}
+#modal-sheet input[type="text"]:focus { border-color: var(--accent); }
+.modal-text { color: var(--text-2); font-size: 15px; line-height: 1.6; margin-bottom: 22px; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-actions.col { flex-direction: column; gap: 8px; }
+
+.btn-primary {
+  flex: 1; background: var(--accent); color: #fff; border: none;
+  border-radius: var(--r-sm); padding: 14px; font-size: 15px; font-weight: 700;
+  cursor: pointer; font-family: var(--font-ui); transition: opacity 0.15s;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary:disabled { opacity: 0.5; cursor: default; }
+.btn-secondary {
+  flex: 1; background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text-2); padding: 14px;
+  font-size: 15px; font-weight: 600; cursor: pointer; font-family: var(--font-ui);
+  transition: background 0.15s; text-align: center;
+}
+.btn-secondary:hover { background: var(--card-hover); }
+.btn-secondary.w-full { width: 100%; flex: none; margin-top: 4px; }
+.btn-ghost { flex: 1; background: none; border: none; color: var(--text-3); padding: 12px; font-size: 14px; cursor: pointer; font-family: var(--font-ui); transition: color 0.15s; }
+.btn-ghost:hover { color: var(--text-2); }
+.btn-danger {
+  flex: 1; background: var(--danger-dim); border: 1px solid var(--danger-border);
+  border-radius: var(--r-sm); color: var(--danger); padding: 14px;
+  font-size: 15px; font-weight: 700; cursor: pointer; font-family: var(--font-ui); transition: background 0.15s;
+}
+.btn-danger:hover { background: rgba(160,68,90,0.15); }
+.menu-list { display: flex; flex-direction: column; margin-bottom: 14px; border-radius: var(--r-sm); overflow: hidden; border: 1px solid var(--border); }
+.menu-item { background: var(--card); border: none; border-bottom: 1px solid var(--border); color: var(--text); padding: 15px 16px; font-size: 16px; cursor: pointer; font-family: var(--font-ui); text-align: left; transition: background 0.15s; font-weight: 500; }
+.menu-item:last-child { border-bottom: none; }
+.menu-item:hover { background: var(--card-hover); }
+.menu-item.danger { color: var(--danger); }
+
+/* Login */
+.login-wrap {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 16px; padding: 40px 20px;
+  max-width: 360px; margin: 0 auto; width: 100%;
+}
+.login-logo { font-size: 44px; line-height: 1; margin-bottom: 4px; }
+.login-title { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+.login-subtitle { font-size: 13px; color: var(--text-3); margin-top: -4px; margin-bottom: 8px; }
+.login-email-display {
+  width: 100%; background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text-2); padding: 13px 14px;
+  font-size: 14px; font-family: var(--font-mono); text-align: center;
+}
+.login-sent { font-size: 14px; color: var(--accent); text-align: center; line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen hidden">
+  <div class="login-wrap">
+    <div class="login-logo">⏱</div>
+    <div class="login-title">Time Tracker</div>
+    <div class="login-subtitle">Acceso privado</div>
+    <div class="login-email-display">paula@tendencias.tv</div>
+    <button class="btn-primary" id="btn-magic-link" style="width:100%">Enviar enlace de acceso</button>
+    <div id="login-sent" class="login-sent hidden">
+      Enlace enviado ✓<br>
+      <span style="color:var(--text-3);font-size:13px">Revisa tu email y haz click en el enlace</span>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="screen-loading" class="screen">
+  <div class="loading-wrap">
+    <div class="spinner"></div>
+    <div class="loading-label">Cargando...</div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="screen-home" class="screen hidden">
+  <header class="app-header">
+    <h1>Time Tracker</h1>
+    <div class="header-actions">
+      <button class="btn-icon" id="btn-analytics" title="Analytics">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+      </button>
+      <button class="btn-new-client" id="btn-new-client">+ Cliente</button>
+    </div>
+  </header>
+  <div id="clients-grid"></div>
+  <div id="archived-toggle" class="hidden" style="padding-top:16px">
+    <button id="archived-toggle-btn">Mostrar archivados</button>
+  </div>
+</div>
+
+<!-- TIMER -->
+<div id="screen-timer" class="screen hidden">
+  <header class="app-header">
+    <button class="btn-back" id="btn-back-timer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Volver
+    </button>
+  </header>
+  <div class="timer-client-area">
+    <div id="timer-client-strip"></div>
+    <div id="timer-client-name"></div>
+  </div>
+  <div class="timer-wrap" id="timer-wrap">
+    <div id="timer-clock">00:00:00</div>
+    <div class="timer-pulse"><div class="timer-pulse-fill"></div></div>
+    <div id="timer-today-label"></div>
+  </div>
+  <div class="timer-buttons">
+    <button id="btn-pause-resume">⏸ Pausa</button>
+    <button id="btn-stop">■ Terminar</button>
+  </div>
+</div>
+
+<!-- ANALYTICS -->
+<div id="screen-analytics" class="screen hidden">
+  <header class="analytics-header">
+    <button class="btn-back" id="btn-back-analytics">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Volver
+    </button>
+    <h2>Analytics</h2>
+    <button class="btn-icon" id="btn-export-csv" title="Exportar CSV">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+    </button>
+  </header>
+  <div class="tab-bar">
+    <button class="tab active" data-period="all">Todo</button>
+    <button class="tab" data-period="today">Hoy</button>
+    <button class="tab" data-period="week">Semana</button>
+    <button class="tab" data-period="month">Mes</button>
+  </div>
+  <div id="analytics-total" class="analytics-total-wrap"></div>
+  <div id="analytics-clients-list"></div>
+  <div class="section-label" id="sessions-label">Sesiones recientes</div>
+  <div id="analytics-sessions-list"></div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" class="hidden">
+  <div id="modal-sheet"><div class="modal-drag"></div></div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ── Supabase ──────────────────────────────────────────
+const SUPABASE_URL = 'https://bjiwdfrqfptatimoinsw.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_pDP-JHX9eU-J4a1Wr7tBNQ_9zkCLXxp'
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+// ── Mappers (DB snake_case → app camelCase) ───────────
+function mapClient(row) {
+  return { id: row.id, name: row.name, color: row.color, archived: row.archived, createdAt: new Date(row.created_at).getTime() }
+}
+function mapSession(row) {
+  return { id: row.id, clientId: row.client_id, start: new Date(row.start_ts).getTime(), end: new Date(row.end_ts).getTime(), duration: row.duration }
+}
+
+// ── Constants ─────────────────────────────────────────
+const COLORS = ['#B8A4D6','#D8A7B1','#9CAF88','#C98FA1','#9E8CBF','#8BA5C0','#C4A882','#5D496E','#A4C4B8','#C9A4C4']
+
+// ── State ─────────────────────────────────────────────
+let data = { clients: [], sessions: [] }
+let currentUser = null
+let activeSession = null
+let showArchived = false
+let analyticsPeriod = 'all'
+
+// ── Toast ─────────────────────────────────────────────
+let toastTimer = null
+function showToast(msg) {
+  const el = document.getElementById('toast')
+  el.textContent = msg
+  el.classList.add('show')
+  clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3500)
+}
+
+// ── Utilities ─────────────────────────────────────────
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+function formatDuration(s) {
+  s = Math.floor(s)
+  if (s < 60) return s > 0 ? `${s}s` : '—'
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60)
+  return h > 0 ? `${h}h ${m}m` : `${m}m`
+}
+function formatClock(s) {
+  s = Math.floor(Math.max(0, s))
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+}
+function formatDate(ts) {
+  return new Date(ts).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+}
+function assignColor() {
+  const used = new Set(data.clients.map(c => c.color))
+  return COLORS.find(c => !used.has(c)) ?? COLORS[data.clients.length % COLORS.length]
+}
+
+// ── Period helpers ────────────────────────────────────
+function getPeriodRange(period) {
+  const now = new Date()
+  let from = 0
+  if (period === 'today') {
+    from = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  } else if (period === 'week') {
+    const day = now.getDay(), diff = day === 0 ? -6 : 1 - day
+    from = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff).getTime()
+  } else if (period === 'month') {
+    from = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+  }
+  return { from, to: Date.now() }
+}
+function getSessionsForPeriod(period) {
+  const { from, to } = getPeriodRange(period)
+  return data.sessions.filter(s => s.end >= from && s.end <= to)
+}
+function getClientTotal(clientId, sessions) {
+  return sessions.filter(s => s.clientId === clientId).reduce((sum, s) => sum + s.duration, 0)
+}
+
+// ── Screen nav ────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'))
+  document.getElementById(`screen-${name}`).classList.remove('hidden')
+}
+
+// ── Render HOME ───────────────────────────────────────
+function renderHome() {
+  const grid = document.getElementById('clients-grid')
+  grid.innerHTML = ''
+  const active = data.clients.filter(c => !c.archived)
+  const archived = data.clients.filter(c => c.archived)
+  const list = showArchived ? data.clients : active
+
+  if (list.length === 0 && active.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><div style="font-size:32px;margin-bottom:12px">⏱</div>Todavía no hay clientes.<br><strong>Añade el primero</strong> con el botón de arriba.</div>`
+  } else {
+    list.forEach(client => {
+      const total = getClientTotal(client.id, data.sessions)
+      const card = document.createElement('div')
+      card.className = `client-card${client.archived ? ' archived' : ''}`
+      card.dataset.id = client.id
+      card.innerHTML = `
+        <div class="card-color-strip" style="background:${client.color}"></div>
+        <div class="card-content">
+          <div class="card-top">
+            <span class="card-name">${escapeHtml(client.name)}</span>
+            <button class="card-menu-btn" data-action="menu" data-id="${client.id}" title="Opciones">⋯</button>
+          </div>
+          <div class="card-total">${formatDuration(total)}</div>
+          ${!client.archived
+            ? `<button class="btn-start" data-action="start" data-id="${client.id}">▶ Iniciar</button>`
+            : `<div class="archived-badge">Archivado</div>`}
+        </div>`
+      grid.appendChild(card)
+      card.classList.add('card-anim-init')
+      requestAnimationFrame(() => requestAnimationFrame(() => card.classList.remove('card-anim-init')))
+    })
+  }
+
+  const toggle = document.getElementById('archived-toggle')
+  const toggleBtn = document.getElementById('archived-toggle-btn')
+  if (archived.length > 0) {
+    toggle.classList.remove('hidden')
+    toggleBtn.textContent = showArchived ? 'Ocultar archivados' : `Mostrar archivados (${archived.length})`
+  } else {
+    toggle.classList.add('hidden')
+    if (showArchived) showArchived = false
+  }
+}
+
+// ── Timer ─────────────────────────────────────────────
+function startTimer(clientId) {
+  const client = data.clients.find(c => c.id === clientId)
+  if (!client || client.archived) return
+  activeSession = { clientId, start: Date.now(), pausedAt: null, pausedTotal: 0, intervalId: null }
+  document.getElementById('timer-client-strip').style.background = client.color
+  const nameEl = document.getElementById('timer-client-name')
+  nameEl.textContent = client.name
+  nameEl.style.color = client.color
+  const { from } = getPeriodRange('today')
+  const todayTotal = data.sessions.filter(s => s.clientId === clientId && s.end >= from).reduce((sum, s) => sum + s.duration, 0)
+  document.getElementById('timer-today-label').textContent = todayTotal > 0 ? `Hoy: ${formatDuration(todayTotal)}` : ''
+  renderClock(0)
+  setPaused(false)
+  showScreen('timer')
+  activeSession.intervalId = setInterval(tick, 500)
+}
+
+function tick() {
+  if (!activeSession || activeSession.pausedAt !== null) return
+  renderClock(getElapsed())
+}
+function getElapsed() {
+  if (!activeSession) return 0
+  const paused = activeSession.pausedAt !== null ? (Date.now() - activeSession.pausedAt) : 0
+  return Math.floor(Math.max(0, Date.now() - activeSession.start - activeSession.pausedTotal - paused) / 1000)
+}
+function renderClock(s) { document.getElementById('timer-clock').textContent = formatClock(s) }
+function setPaused(paused) {
+  document.getElementById('timer-wrap').classList.toggle('paused', paused)
+  const btn = document.getElementById('btn-pause-resume')
+  btn.classList.toggle('paused', paused)
+  btn.textContent = paused ? '▶ Reanudar' : '⏸ Pausa'
+}
+function pauseTimer() {
+  if (!activeSession || activeSession.pausedAt !== null) return
+  activeSession.pausedAt = Date.now(); setPaused(true)
+}
+function resumeTimer() {
+  if (!activeSession || activeSession.pausedAt === null) return
+  activeSession.pausedTotal += Date.now() - activeSession.pausedAt
+  activeSession.pausedAt = null; setPaused(false)
+}
+
+function stopTimer() {
+  if (!activeSession) return
+  clearInterval(activeSession.intervalId)
+  const duration = getElapsed()
+  const snap = { clientId: activeSession.clientId, start: activeSession.start, end: Date.now() }
+  activeSession = null
+
+  if (duration > 0) {
+    const tempId = 'temp-' + Date.now()
+    data.sessions.push({ id: tempId, clientId: snap.clientId, start: snap.start, end: snap.end, duration })
+    renderHome()
+    showScreen('home')
+
+    if (currentUser) {
+      sb.from('sessions').insert({
+        client_id: snap.clientId,
+        start_ts: new Date(snap.start).toISOString(),
+        end_ts: new Date(snap.end).toISOString(),
+        duration
+      }).select().single().then(({ data: row, error }) => {
+        if (error) { showToast('Error guardando sesión'); return }
+        const idx = data.sessions.findIndex(s => s.id === tempId)
+        if (idx >= 0) data.sessions[idx] = mapSession(row)
+      })
+    }
+  } else {
+    renderHome()
+    showScreen('home')
+  }
+}
+
+function discardTimer() {
+  if (!activeSession) return
+  clearInterval(activeSession.intervalId)
+  activeSession = null
+  showScreen('home')
+}
+
+// ── Modals ────────────────────────────────────────────
+function openModal(html) {
+  const sheet = document.getElementById('modal-sheet')
+  sheet.innerHTML = `<div class="modal-drag"></div>${html}`
+  document.getElementById('modal-overlay').classList.remove('hidden')
+  requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.add('open')))
+  setTimeout(() => { const inp = sheet.querySelector('input'); if (inp) inp.focus() }, 80)
+}
+function closeModal() {
+  const sheet = document.getElementById('modal-sheet')
+  sheet.classList.remove('open')
+  setTimeout(() => { document.getElementById('modal-overlay').classList.add('hidden'); sheet.innerHTML = '<div class="modal-drag"></div>' }, 320)
+}
+
+// New / Edit client
+function openClientModal(editId) {
+  const existing = editId ? data.clients.find(c => c.id === editId) : null
+  const color = existing ? existing.color : assignColor()
+  openModal(`
+    <div class="modal-header"><h3>${editId ? 'Editar cliente' : 'Nuevo cliente'}</h3></div>
+    <div class="modal-color-dot" style="background:${color}"></div>
+    <input type="text" id="modal-name" placeholder="Nombre del cliente" value="${escapeHtml(existing?.name || '')}" maxlength="50">
+    <div class="modal-actions">
+      <button class="btn-secondary" id="modal-cancel">Cancelar</button>
+      <button class="btn-primary" id="modal-save">${editId ? 'Guardar' : 'Crear'}</button>
+    </div>
+  `)
+  document.getElementById('modal-cancel').onclick = closeModal
+  document.getElementById('modal-save').onclick = async () => {
+    const name = document.getElementById('modal-name').value.trim()
+    if (!name) { document.getElementById('modal-name').focus(); return }
+    const saveBtn = document.getElementById('modal-save')
+    saveBtn.disabled = true; saveBtn.textContent = '...'
+    if (editId) {
+      if (currentUser) {
+        const { error } = await sb.from('clients').update({ name }).eq('id', editId)
+        if (error) { showToast('Error al guardar'); saveBtn.disabled = false; saveBtn.textContent = 'Guardar'; return }
+      }
+      const c = data.clients.find(c => c.id === editId); if (c) c.name = name
+    } else {
+      if (currentUser) {
+        const { data: row, error } = await sb.from('clients').insert({ name, color, archived: false }).select().single()
+        if (error) { showToast('Error al crear cliente'); saveBtn.disabled = false; saveBtn.textContent = 'Crear'; return }
+        data.clients.push(mapClient(row))
+      } else {
+        data.clients.push({ id: 'local-' + Date.now(), name, color, archived: false, createdAt: Date.now() })
+      }
+    }
+    closeModal(); renderHome()
+  }
+  document.getElementById('modal-name').onkeydown = e => { if (e.key === 'Enter') document.getElementById('modal-save').click() }
+}
+
+// Menu
+function openMenuModal(clientId) {
+  const client = data.clients.find(c => c.id === clientId); if (!client) return
+  openModal(`
+    <div class="modal-header"><h3>${escapeHtml(client.name)}</h3></div>
+    <div class="menu-list">
+      <button class="menu-item" id="m-edit">✏️ &nbsp;Editar nombre</button>
+      <button class="menu-item" id="m-archive">${client.archived ? '📤 &nbsp;Activar cliente' : '📁 &nbsp;Archivar'}</button>
+      <button class="menu-item danger" id="m-delete">🗑 &nbsp;Eliminar</button>
+    </div>
+    <button class="btn-secondary w-full" id="modal-cancel">Cancelar</button>
+  `)
+  document.getElementById('modal-cancel').onclick = closeModal
+  document.getElementById('m-edit').onclick = () => { closeModal(); setTimeout(() => openClientModal(clientId), 340) }
+  document.getElementById('m-archive').onclick = async () => {
+    closeModal()
+    if (currentUser) {
+      const { error } = await sb.from('clients').update({ archived: !client.archived }).eq('id', clientId)
+      if (error) { showToast('Error'); return }
+    }
+    const c = data.clients.find(c => c.id === clientId); if (c) c.archived = !c.archived
+    renderHome()
+  }
+  document.getElementById('m-delete').onclick = () => { closeModal(); setTimeout(() => openDeleteModal(clientId), 340) }
+}
+
+// Delete confirm
+function openDeleteModal(clientId) {
+  const client = data.clients.find(c => c.id === clientId); if (!client) return
+  const count = data.sessions.filter(s => s.clientId === clientId).length
+  openModal(`
+    <div class="modal-header"><h3>Eliminar cliente</h3></div>
+    <p class="modal-text">¿Eliminar <strong>${escapeHtml(client.name)}</strong>?${count > 0 ? `<br>Se borrarán ${count} sesión${count !== 1 ? 'es' : ''}.` : ''}</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="modal-cancel">Cancelar</button>
+      <button class="btn-danger" id="modal-confirm-delete">Eliminar</button>
+    </div>
+  `)
+  document.getElementById('modal-cancel').onclick = closeModal
+  document.getElementById('modal-confirm-delete').onclick = async () => {
+    const btn = document.getElementById('modal-confirm-delete')
+    btn.disabled = true; btn.textContent = '...'
+    if (currentUser) {
+      const { error: e1 } = await sb.from('sessions').delete().eq('client_id', clientId)
+      if (e1) { showToast('Error al eliminar'); btn.disabled = false; btn.textContent = 'Eliminar'; return }
+      const { error: e2 } = await sb.from('clients').delete().eq('id', clientId)
+      if (e2) { showToast('Error al eliminar'); btn.disabled = false; btn.textContent = 'Eliminar'; return }
+    }
+    data.clients = data.clients.filter(c => c.id !== clientId)
+    data.sessions = data.sessions.filter(s => s.clientId !== clientId)
+    closeModal(); renderHome()
+  }
+}
+
+// Exit timer
+function openExitTimerModal() {
+  openModal(`
+    <div class="modal-header"><h3>Timer activo</h3></div>
+    <p class="modal-text">Hay un timer corriendo. ¿Qué quieres hacer?</p>
+    <div class="modal-actions col">
+      <button class="btn-primary" id="m-save-exit">Guardar sesión y salir</button>
+      <button class="btn-secondary" id="m-discard">Salir sin guardar</button>
+      <button class="btn-ghost" id="modal-cancel">Seguir trabajando</button>
+    </div>
+  `)
+  document.getElementById('modal-cancel').onclick = () => { closeModal(); resumeTimer() }
+  document.getElementById('m-save-exit').onclick = () => { closeModal(); stopTimer() }
+  document.getElementById('m-discard').onclick = () => { closeModal(); discardTimer() }
+}
+
+// ── Analytics ─────────────────────────────────────────
+function renderAnalytics(period) {
+  analyticsPeriod = period
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.period === period))
+  const sessions = getSessionsForPeriod(period)
+  const total = sessions.reduce((sum, s) => sum + s.duration, 0)
+  document.getElementById('analytics-total').innerHTML = `
+    <div class="analytics-total-label">Tiempo total</div>
+    <div class="analytics-total-value${total === 0 ? ' empty' : ''}">${total > 0 ? formatDuration(total) : '—'}</div>`
+  const clientList = document.getElementById('analytics-clients-list')
+  const ranked = data.clients.map(c => ({ c, t: getClientTotal(c.id, sessions) })).filter(x => x.t > 0).sort((a, b) => b.t - a.t)
+  if (ranked.length === 0) {
+    clientList.innerHTML = '<p class="no-data">Sin sesiones en este período.</p>'
+    document.getElementById('sessions-label').style.display = 'none'
+  } else {
+    document.getElementById('sessions-label').style.display = ''
+    const max = ranked[0].t
+    clientList.innerHTML = ranked.map(({ c, t }) => `
+      <div class="analytics-client-row">
+        <div class="analytics-client-info">
+          <span class="color-dot" style="background:${c.color}"></span>
+          <span class="analytics-client-name">${escapeHtml(c.name)}</span>
+          <span class="analytics-client-time">${formatDuration(t)}</span>
+        </div>
+        <div class="analytics-bar-bg">
+          <div class="analytics-bar-fill" style="width:0%;background:${c.color}20;border-left:3px solid ${c.color}" data-target="${(t/max*100).toFixed(1)}"></div>
+        </div>
+      </div>`).join('')
+    requestAnimationFrame(() => {
+      clientList.querySelectorAll('.analytics-bar-fill').forEach((el, i) => {
+        setTimeout(() => { el.style.width = el.dataset.target + '%' }, 20 + i * 40)
+      })
+    })
+  }
+  const sessionsList = document.getElementById('analytics-sessions-list')
+  const recent = [...sessions].sort((a, b) => b.end - a.end).slice(0, 25)
+  sessionsList.innerHTML = recent.length === 0 ? '<p class="no-data">Sin sesiones registradas.</p>' :
+    recent.map(s => {
+      const client = data.clients.find(c => c.id === s.clientId); if (!client) return ''
+      return `<div class="session-row">
+        <span class="color-dot" style="background:${client.color}"></span>
+        <span class="session-client">${escapeHtml(client.name)}</span>
+        <span class="session-date">${formatDate(s.end)}</span>
+        <span class="session-duration">${formatDuration(s.duration)}</span>
+      </div>`
+    }).join('')
+}
+
+// ── Event Listeners ───────────────────────────────────
+document.getElementById('btn-new-client').onclick = () => openClientModal(null)
+document.getElementById('btn-analytics').onclick = () => { renderAnalytics('all'); showScreen('analytics') }
+document.getElementById('archived-toggle-btn').onclick = () => { showArchived = !showArchived; renderHome() }
+document.getElementById('clients-grid').addEventListener('click', e => {
+  const start = e.target.closest('[data-action="start"]')
+  if (start) { startTimer(start.dataset.id); return }
+  const menu = e.target.closest('[data-action="menu"]')
+  if (menu) { openMenuModal(menu.dataset.id); return }
+})
+document.getElementById('btn-back-timer').onclick = () => {
+  if (activeSession) { if (activeSession.pausedAt === null) pauseTimer(); openExitTimerModal() }
+  else showScreen('home')
+}
+document.getElementById('btn-pause-resume').onclick = () => {
+  if (!activeSession) return
+  activeSession.pausedAt !== null ? resumeTimer() : pauseTimer()
+}
+document.getElementById('btn-stop').onclick = stopTimer
+document.getElementById('btn-back-analytics').onclick = () => showScreen('home')
+document.querySelectorAll('.tab').forEach(tab => { tab.onclick = () => renderAnalytics(tab.dataset.period) })
+document.getElementById('btn-export-csv').onclick = exportCSV
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal()
+})
+
+// ── Export CSV ────────────────────────────────────────
+function exportCSV() {
+  const sessions = getSessionsForPeriod(analyticsPeriod)
+  if (sessions.length === 0) { showToast('Sin datos en este período'); return }
+
+  const periodLabel = { all: 'todo', today: 'hoy', week: 'semana', month: 'mes' }[analyticsPeriod]
+  const ranked = data.clients
+    .map(c => ({ c, t: getClientTotal(c.id, sessions), count: sessions.filter(s => s.clientId === c.id).length }))
+    .filter(x => x.t > 0)
+    .sort((a, b) => b.t - a.t)
+
+  const rows = []
+  rows.push(['RESUMEN POR CLIENTE'])
+  rows.push(['Cliente', 'Horas', 'Minutos', 'Horas (decimal)', 'Sesiones'])
+  ranked.forEach(({ c, t, count }) => {
+    rows.push([c.name, Math.floor(t / 3600), Math.floor((t % 3600) / 60), (t / 3600).toFixed(2), count])
+  })
+
+  rows.push([])
+  rows.push(['DETALLE SESIONES'])
+  rows.push(['Fecha', 'Cliente', 'Inicio', 'Fin', 'Duración', 'Horas (decimal)'])
+  ;[...sessions].sort((a, b) => b.end - a.end).forEach(s => {
+    const client = data.clients.find(c => c.id === s.clientId); if (!client) return
+    rows.push([
+      new Date(s.end).toLocaleDateString('es-ES'),
+      client.name,
+      new Date(s.start).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+      new Date(s.end).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+      formatDuration(s.duration),
+      (s.duration / 3600).toFixed(2)
+    ])
+  })
+
+  const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n')
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `time-tracker-${periodLabel}-${new Date().toISOString().slice(0, 7)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+// ── Auth ──────────────────────────────────────────────
+document.getElementById('btn-magic-link').onclick = async () => {
+  const btn = document.getElementById('btn-magic-link')
+  btn.disabled = true; btn.textContent = 'Enviando...'
+  const { error } = await sb.auth.signInWithOtp({
+    email: 'paula@tendencias.tv',
+    options: { emailRedirectTo: window.location.origin + window.location.pathname }
+  })
+  if (error) {
+    showToast('Error enviando el enlace')
+    btn.disabled = false; btn.textContent = 'Enviar enlace de acceso'
+  } else {
+    document.getElementById('login-sent').classList.remove('hidden')
+    btn.textContent = 'Enlace enviado'
+  }
+}
+
+sb.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_IN') init()
+})
+
+// ── Init ──────────────────────────────────────────────
+async function init() {
+  showScreen('loading')
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) { showScreen('login'); return }
+  currentUser = session?.user || null
+  if (currentUser) {
+    try {
+      const [{ data: clients, error: e1 }, { data: sessions, error: e2 }] = await Promise.all([
+        sb.from('clients').select('*').order('created_at'),
+        sb.from('sessions').select('*').order('created_at')
+      ])
+      if (e1 || e2) throw new Error()
+      data.clients = (clients || []).map(mapClient)
+      data.sessions = (sessions || []).map(mapSession)
+    } catch {
+      showToast('Error conectando con la base de datos')
+    }
+  }
+  renderHome()
+  showScreen('home')
+}
+
+init()
+</script>
+</body>
+</html>
