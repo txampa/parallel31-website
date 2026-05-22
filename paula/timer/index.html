@@ -487,6 +487,7 @@ function mapSession(row) {
 
 // ── Constants ─────────────────────────────────────────
 const COLORS = ['#B8A4D6','#D8A7B1','#9CAF88','#C98FA1','#9E8CBF','#8BA5C0','#C4A882','#5D496E','#A4C4B8','#C9A4C4']
+const SESSION_KEY = 'tt_session_' + location.pathname.replace(/\//g, '_')
 
 // ── State ─────────────────────────────────────────────
 let data = { clients: [], sessions: [] }
@@ -494,6 +495,34 @@ let currentUser = null
 let activeSession = null
 let showArchived = false
 let analyticsPeriod = 'all'
+
+// ── Session persistence ───────────────────────────────
+function saveSession() {
+  if (!activeSession) return
+  try { localStorage.setItem(SESSION_KEY, JSON.stringify({ clientId: activeSession.clientId, start: activeSession.start, pausedAt: activeSession.pausedAt, pausedTotal: activeSession.pausedTotal })) } catch {}
+}
+function clearSession() { try { localStorage.removeItem(SESSION_KEY) } catch {} }
+function restoreSession() {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY)
+    if (!raw) return false
+    const s = JSON.parse(raw)
+    const client = data.clients.find(c => c.id === s.clientId)
+    if (!client) { clearSession(); return false }
+    activeSession = { clientId: s.clientId, start: s.start, pausedAt: s.pausedAt, pausedTotal: s.pausedTotal, intervalId: null }
+    document.getElementById('timer-client-strip').style.background = client.color
+    const nameEl = document.getElementById('timer-client-name')
+    nameEl.textContent = client.name; nameEl.style.color = client.color
+    const { from } = getPeriodRange('today')
+    const todayTotal = data.sessions.filter(x => x.clientId === client.id && x.end >= from).reduce((sum, x) => sum + x.duration, 0)
+    document.getElementById('timer-today-label').textContent = todayTotal > 0 ? `Hoy: ${formatDuration(todayTotal)}` : ''
+    renderClock(getElapsed())
+    setPaused(s.pausedAt !== null)
+    showScreen('timer')
+    if (s.pausedAt === null) activeSession.intervalId = setInterval(tick, 500)
+    return true
+  } catch { clearSession(); return false }
+}
 
 // ── Toast ─────────────────────────────────────────────
 let toastTimer = null
@@ -606,6 +635,7 @@ function startTimer(clientId) {
   const client = data.clients.find(c => c.id === clientId)
   if (!client || client.archived) return
   activeSession = { clientId, start: Date.now(), pausedAt: null, pausedTotal: 0, intervalId: null }
+  saveSession()
   document.getElementById('timer-client-strip').style.background = client.color
   const nameEl = document.getElementById('timer-client-name')
   nameEl.textContent = client.name
@@ -637,17 +667,18 @@ function setPaused(paused) {
 }
 function pauseTimer() {
   if (!activeSession || activeSession.pausedAt !== null) return
-  activeSession.pausedAt = Date.now(); setPaused(true)
+  activeSession.pausedAt = Date.now(); setPaused(true); saveSession()
 }
 function resumeTimer() {
   if (!activeSession || activeSession.pausedAt === null) return
   activeSession.pausedTotal += Date.now() - activeSession.pausedAt
-  activeSession.pausedAt = null; setPaused(false)
+  activeSession.pausedAt = null; setPaused(false); saveSession()
 }
 
 function stopTimer() {
   if (!activeSession) return
   clearInterval(activeSession.intervalId)
+  clearSession()
   const duration = getElapsed()
   const snap = { clientId: activeSession.clientId, start: activeSession.start, end: Date.now() }
   activeSession = null
@@ -679,6 +710,7 @@ function stopTimer() {
 function discardTimer() {
   if (!activeSession) return
   clearInterval(activeSession.intervalId)
+  clearSession()
   activeSession = null
   showScreen('home')
 }
@@ -879,6 +911,9 @@ document.getElementById('btn-export-csv').onclick = exportCSV
 document.getElementById('modal-overlay').addEventListener('click', e => {
   if (e.target === document.getElementById('modal-overlay')) closeModal()
 })
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && activeSession && activeSession.pausedAt === null) renderClock(getElapsed())
+})
 
 // ── Export CSV ────────────────────────────────────────
 function exportCSV() {
@@ -964,7 +999,7 @@ async function init() {
     }
   }
   renderHome()
-  showScreen('home')
+  if (!restoreSession()) showScreen('home')
 }
 
 init()
