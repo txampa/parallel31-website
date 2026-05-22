@@ -694,7 +694,8 @@ function stopTimer() {
         client_id: snap.clientId,
         start_ts: new Date(snap.start).toISOString(),
         end_ts: new Date(snap.end).toISOString(),
-        duration
+        duration,
+        user_id: currentUser.id
       }).select().single().then(({ data: row, error }) => {
         if (error) { showToast('Error guardando sesión'); return }
         const idx = data.sessions.findIndex(s => s.id === tempId)
@@ -976,7 +977,10 @@ document.getElementById('btn-magic-link').onclick = async () => {
 }
 
 sb.auth.onAuthStateChange((event) => {
-  if (event === 'SIGNED_IN') init()
+  if (event === 'SIGNED_IN') {
+    const onLogin = !document.getElementById('screen-login').classList.contains('hidden')
+    if (onLogin) init()
+  }
 })
 
 // ── Init ──────────────────────────────────────────────
