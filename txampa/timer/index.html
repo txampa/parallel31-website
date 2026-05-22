@@ -488,6 +488,7 @@ const COLORS = ['#00D9A3','#7C6EFA','#FF6B6B','#FFB020','#3B9EFF','#FF7EC7','#A8
 
 // ── State ─────────────────────────────────────────────
 let data = { clients: [], sessions: [] }
+let currentUser = null
 let activeSession = null
 let showArchived = false
 let analyticsPeriod = 'all'
@@ -656,17 +657,19 @@ function stopTimer() {
     renderHome()
     showScreen('home')
 
-    // Persist in background
-    sb.from('sessions').insert({
-      client_id: snap.clientId,
-      start_ts: new Date(snap.start).toISOString(),
-      end_ts: new Date(snap.end).toISOString(),
-      duration
-    }).select().single().then(({ data: row, error }) => {
-      if (error) { showToast('Error guardando sesión'); return }
-      const idx = data.sessions.findIndex(s => s.id === tempId)
-      if (idx >= 0) data.sessions[idx] = mapSession(row)
-    })
+    // Persist in background (solo si hay sesión activa)
+    if (currentUser) {
+      sb.from('sessions').insert({
+        client_id: snap.clientId,
+        start_ts: new Date(snap.start).toISOString(),
+        end_ts: new Date(snap.end).toISOString(),
+        duration
+      }).select().single().then(({ data: row, error }) => {
+        if (error) { showToast('Error guardando sesión'); return }
+        const idx = data.sessions.findIndex(s => s.id === tempId)
+        if (idx >= 0) data.sessions[idx] = mapSession(row)
+      })
+    }
   } else {
     renderHome()
     showScreen('home')
@@ -714,13 +717,19 @@ function openClientModal(editId) {
     const saveBtn = document.getElementById('modal-save')
     saveBtn.disabled = true; saveBtn.textContent = '...'
     if (editId) {
-      const { error } = await sb.from('clients').update({ name }).eq('id', editId)
-      if (error) { showToast('Error al guardar'); saveBtn.disabled = false; saveBtn.textContent = 'Guardar'; return }
+      if (currentUser) {
+        const { error } = await sb.from('clients').update({ name }).eq('id', editId)
+        if (error) { showToast('Error al guardar'); saveBtn.disabled = false; saveBtn.textContent = 'Guardar'; return }
+      }
       const c = data.clients.find(c => c.id === editId); if (c) c.name = name
     } else {
-      const { data: row, error } = await sb.from('clients').insert({ name, color, archived: false }).select().single()
-      if (error) { showToast('Error al crear cliente'); saveBtn.disabled = false; saveBtn.textContent = 'Crear'; return }
-      data.clients.push(mapClient(row))
+      if (currentUser) {
+        const { data: row, error } = await sb.from('clients').insert({ name, color, archived: false }).select().single()
+        if (error) { showToast('Error al crear cliente'); saveBtn.disabled = false; saveBtn.textContent = 'Crear'; return }
+        data.clients.push(mapClient(row))
+      } else {
+        data.clients.push({ id: 'local-' + Date.now(), name, color, archived: false, createdAt: Date.now() })
+      }
     }
     closeModal(); renderHome()
   }
@@ -743,8 +752,10 @@ function openMenuModal(clientId) {
   document.getElementById('m-edit').onclick = () => { closeModal(); setTimeout(() => openClientModal(clientId), 340) }
   document.getElementById('m-archive').onclick = async () => {
     closeModal()
-    const { error } = await sb.from('clients').update({ archived: !client.archived }).eq('id', clientId)
-    if (error) { showToast('Error'); return }
+    if (currentUser) {
+      const { error } = await sb.from('clients').update({ archived: !client.archived }).eq('id', clientId)
+      if (error) { showToast('Error'); return }
+    }
     const c = data.clients.find(c => c.id === clientId); if (c) c.archived = !c.archived
     renderHome()
   }
@@ -767,10 +778,12 @@ function openDeleteModal(clientId) {
   document.getElementById('modal-confirm-delete').onclick = async () => {
     const btn = document.getElementById('modal-confirm-delete')
     btn.disabled = true; btn.textContent = '...'
-    const { error: e1 } = await sb.from('sessions').delete().eq('client_id', clientId)
-    if (e1) { showToast('Error al eliminar'); btn.disabled = false; btn.textContent = 'Eliminar'; return }
-    const { error: e2 } = await sb.from('clients').delete().eq('id', clientId)
-    if (e2) { showToast('Error al eliminar'); btn.disabled = false; btn.textContent = 'Eliminar'; return }
+    if (currentUser) {
+      const { error: e1 } = await sb.from('sessions').delete().eq('client_id', clientId)
+      if (e1) { showToast('Error al eliminar'); btn.disabled = false; btn.textContent = 'Eliminar'; return }
+      const { error: e2 } = await sb.from('clients').delete().eq('id', clientId)
+      if (e2) { showToast('Error al eliminar'); btn.disabled = false; btn.textContent = 'Eliminar'; return }
+    }
     data.clients = data.clients.filter(c => c.id !== clientId)
     data.sessions = data.sessions.filter(s => s.clientId !== clientId)
     closeModal(); renderHome()
@@ -937,16 +950,19 @@ async function init() {
   const { data: { session } } = await sb.auth.getSession()
   // ACCESO LIBRE TEMPORAL — descomentar para restaurar restricción:
   // if (!session) { showScreen('login'); return }
-  try {
-    const [{ data: clients, error: e1 }, { data: sessions, error: e2 }] = await Promise.all([
-      sb.from('clients').select('*').order('created_at'),
-      sb.from('sessions').select('*').order('created_at')
-    ])
-    if (e1 || e2) throw new Error()
-    data.clients = (clients || []).map(mapClient)
-    data.sessions = (sessions || []).map(mapSession)
-  } catch {
-    showToast('Error conectando con la base de datos')
+  currentUser = session?.user || null
+  if (currentUser) {
+    try {
+      const [{ data: clients, error: e1 }, { data: sessions, error: e2 }] = await Promise.all([
+        sb.from('clients').select('*').order('created_at'),
+        sb.from('sessions').select('*').order('created_at')
+      ])
+      if (e1 || e2) throw new Error()
+      data.clients = (clients || []).map(mapClient)
+      data.sessions = (sessions || []).map(mapSession)
+    } catch {
+      showToast('Error conectando con la base de datos')
+    }
   }
   renderHome()
   showScreen('home')
