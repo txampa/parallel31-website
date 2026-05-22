@@ -948,8 +948,7 @@ sb.auth.onAuthStateChange((event) => {
 async function init() {
   showScreen('loading')
   const { data: { session } } = await sb.auth.getSession()
-  // ACCESO LIBRE TEMPORAL — descomentar para restaurar restricción:
-  // if (!session) { showScreen('login'); return }
+  if (!session) { showScreen('login'); return }
   currentUser = session?.user || null
   if (currentUser) {
     try {
