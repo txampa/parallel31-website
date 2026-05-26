@@ -17,6 +17,14 @@
       "destination": "https://can-lluc-hotel-os-production.up.railway.app/:path*"
     },
     {
+      "source": "/hotels/can-curreu-demo/:path*",
+      "destination": "https://melodious-dream-production.up.railway.app/:path*"
+    },
+    {
+      "source": "/hotels/emsa-hotels-demo/:path*",
+      "destination": "https://emsa-hotels-demo.vercel.app/:path*"
+    },
+    {
       "source": "/ecommerce/youin-demo/:path*",
       "destination": "https://youin-brain-production.up.railway.app/:path*"
     }
