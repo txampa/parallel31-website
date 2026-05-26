@@ -21,6 +21,14 @@
       "destination": "https://melodious-dream-production.up.railway.app/:path*"
     },
     {
+      "source": "/hotels/emsa-hotels-demo",
+      "destination": "https://emsa-hotels-demo.vercel.app/"
+    },
+    {
+      "source": "/hotels/emsa-hotels-demo/",
+      "destination": "https://emsa-hotels-demo.vercel.app/"
+    },
+    {
       "source": "/hotels/emsa-hotels-demo/:path*",
       "destination": "https://emsa-hotels-demo.vercel.app/:path*"
     },
