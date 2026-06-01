@@ -33,7 +33,19 @@
       "destination": "https://emsa-hotels-demo.vercel.app/:path*"
     },
     {
-      "source": "/ecommerce/youin-demo/:path*",
+      "source": "/hotels/ncalma-demo",
+      "destination": "https://ncalma-demo.vercel.app/"
+    },
+    {
+      "source": "/hotels/ncalma-demo/",
+      "destination": "https://ncalma-demo.vercel.app/"
+    },
+    {
+      "source": "/hotels/ncalma-demo/:path*",
+      "destination": "https://ncalma-demo.vercel.app/:path*"
+    },
+    {
+      "source": "/ecommerce/youin-txampa/:path*",
       "destination": "https://youin-brain-production.up.railway.app/:path*"
     }
   ]
