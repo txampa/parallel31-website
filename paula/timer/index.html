@@ -757,7 +757,7 @@ function openClientModal(editId) {
       const c = data.clients.find(c => c.id === editId); if (c) c.name = name
     } else {
       if (currentUser) {
-        const { data: row, error } = await sb.from('clients').insert({ name, color, archived: false }).select().single()
+        const { data: row, error } = await sb.from('clients').insert({ name, color, archived: false, user_id: currentUser.id }).select().single()
         if (error) { showToast('Error al crear cliente'); saveBtn.disabled = false; saveBtn.textContent = 'Crear'; return }
         data.clients.push(mapClient(row))
       } else {
@@ -987,6 +987,12 @@ sb.auth.onAuthStateChange((event) => {
 async function init() {
   showScreen('loading')
   const { data: { session } } = await sb.auth.getSession()
+  // If a different user's session is cached (e.g. txampa on shared device), sign out locally
+  if (session && session.user?.email !== 'paula@tendencias.tv') {
+    await sb.auth.signOut({ scope: 'local' })
+    showScreen('login')
+    return
+  }
   if (!session) { showScreen('login'); return }
   currentUser = session?.user || null
   if (currentUser) {
@@ -1006,7 +1012,28 @@ async function init() {
   if (!restoreSession()) showScreen('home')
 }
 
-init()
+// Procesar callback del magic link al cargar
+(async () => {
+  const hash = window.location.hash.substring(1)
+  const hasAccessToken = hash && hash.includes('access_token')
+
+  if (hasAccessToken) {
+    await new Promise(r => setTimeout(r, 200))
+  }
+
+  init()
+
+  if (hasAccessToken) {
+    await new Promise(r => setTimeout(r, 300))
+    const { data: { session } } = await sb.auth.getSession()
+    if (session) {
+      currentUser = session.user
+      window.location.hash = ''
+      renderHome()
+      if (!restoreSession()) showScreen('home')
+    }
+  }
+})()
 </script>
 </body>
 </html>

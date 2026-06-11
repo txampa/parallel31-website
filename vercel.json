@@ -45,6 +45,18 @@
       "destination": "https://ncalma-demo.vercel.app/:path*"
     },
     {
+      "source": "/hotels/iberostar-demo",
+      "destination": "https://iberostar-demo.vercel.app/"
+    },
+    {
+      "source": "/hotels/iberostar-demo/",
+      "destination": "https://iberostar-demo.vercel.app/"
+    },
+    {
+      "source": "/hotels/iberostar-demo/:path*",
+      "destination": "https://iberostar-demo.vercel.app/:path*"
+    },
+    {
       "source": "/ecommerce/youin-txampa/:path*",
       "destination": "https://youin-brain-production.up.railway.app/:path*"
     }

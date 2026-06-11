@@ -1007,7 +1007,28 @@ async function init() {
   if (!restoreSession()) showScreen('home')
 }
 
-init()
+// Procesar callback del magic link al cargar
+(async () => {
+  const hash = window.location.hash.substring(1)
+  const hasAccessToken = hash && hash.includes('access_token')
+
+  if (hasAccessToken) {
+    await new Promise(r => setTimeout(r, 200))
+  }
+
+  init()
+
+  if (hasAccessToken) {
+    await new Promise(r => setTimeout(r, 300))
+    const { data: { session } } = await sb.auth.getSession()
+    if (session) {
+      currentUser = session.user
+      window.location.hash = ''
+      renderHome()
+      if (!restoreSession()) showScreen('home')
+    }
+  }
+})()
 </script>
 </body>
 </html>
