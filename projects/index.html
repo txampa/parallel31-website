@@ -357,27 +357,17 @@
     .media-desk-phone .m-phone img { flex: 1; min-height: 0; object-position: center top; }
 
     /* layout: phones */
-    .media-phones { display: grid; grid-template-columns: 1fr 1fr 1.6fr; gap: 14px; }
+    .media-phones { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
     .media-phones figure { display: flex; flex-direction: column; }
     .media-phones figure img { flex: 1; min-height: 0; }
-    .media-phones .m-note {
-      border: 1px solid var(--border-light);
-      background: var(--surface);
-      padding: 26px 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      gap: 6px;
-    }
-    .m-note h4 { font-size: 20px; font-weight: 600; }
-    .m-note p { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; }
 
     /* layout: stacked wide strips */
     .media-strips { display: grid; gap: 14px; }
     .media-strips figure img { width: 100%; height: auto; }
-    .media-strips .m-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
-    .media-strips .m-row figure { aspect-ratio: auto; display: flex; flex-direction: column; }
-    .media-strips .m-row figure img { flex: 1; min-height: 0; object-fit: cover; }
+    .media-strips .strip-crop { display: flex; flex-direction: column; }
+    .media-strips .strip-crop img { aspect-ratio: 2.5 / 1; object-fit: cover; object-position: center; }
+    .media-strips .strip-top { display: flex; flex-direction: column; }
+    .media-strips .strip-top img { aspect-ratio: 2 / 1; object-fit: cover; object-position: top center; }
 
     /* ── Terminal panel (headless systems) ── */
     .terminal {
@@ -528,7 +518,6 @@
       .media-desk-phone { grid-template-columns: 1fr; }
       .media-desk-phone .m-phone { display: none; }
       .media-phones { grid-template-columns: 1fr 1fr; }
-      .media-phones .m-note { grid-column: 1 / -1; }
       .sys-grid { grid-template-columns: 1fr; }
       .media-strips .m-row { grid-template-columns: 1fr; }
     }
@@ -643,18 +632,18 @@
           <span>TypeScript</span><span>Vercel Serverless</span><span>Alpine.js</span><span>Chart.js</span>
         </div>
         <div class="media-main2 fade-up" data-d="2">
-          <figure class="m-main">
-            <img src="/projects/assets/ncalma-2-dash.jpg" alt="NCALMA Hotels — light mode Hotel OS dashboard with occupancy, arrivals and daily tasks" loading="lazy">
-            <figcaption>Today@Hotel — light theme, multi-property dropdown</figcaption>
+          <figure class="m-main" style="aspect-ratio: 1900 / 924;">
+            <img src="/projects/assets/ncalma-0-home.jpg" alt="NCALMA Hotel OS — branded home, AI-first hospitality operations" loading="lazy" style="aspect-ratio: 1900 / 924;">
+            <figcaption>Home — AI-first hospitality operations, branded access</figcaption>
           </figure>
           <div class="m-row">
             <figure>
-              <img src="/projects/assets/ncalma-1-login.jpg" alt="NCALMA Hotel OS — branded login screen" loading="lazy">
-              <figcaption>Branded access — pilot environment</figcaption>
+              <img src="/projects/assets/ncalma-2-dash.jpg" alt="NCALMA Hotels — light mode Hotel OS dashboard with occupancy, arrivals and daily tasks" loading="lazy">
+              <figcaption>Today@Hotel — arrivals, allergies, AI daily tasks</figcaption>
             </figure>
             <figure>
-              <img src="/projects/assets/ncalma-3-dash2.jpg" alt="NCALMA Hotel OS — daily tasks and operational detail" loading="lazy">
-              <figcaption>AI daily tasks — allergies, anniversaries, VIP prep</figcaption>
+              <img src="/projects/assets/ncalma-3-aiops.jpg" alt="NCALMA Hotel OS — AI Operations with workflows, system goals and infrastructure status" loading="lazy">
+              <figcaption>AI Operations — workflows, goals &amp; infrastructure</figcaption>
             </figure>
           </div>
         </div>
@@ -699,8 +688,8 @@
               <figcaption>Tiempo real — agent activity stream</figcaption>
             </figure>
             <figure>
-              <img src="/projects/assets/youinbrain-4-sim.jpg" alt="YOUIN dashboard — interactive agent simulations" loading="lazy">
-              <figcaption>Simulaciones — agents resolving operations end-to-end</figcaption>
+              <img src="/projects/assets/youinbrain-4-autom.jpg" alt="YOUIN dashboard — AI automations with agent org chart, company goals and budget tracking" loading="lazy">
+              <figcaption>Automatizaciones IA — agent org chart, goals &amp; budget</figcaption>
             </figure>
           </div>
         </div>
@@ -721,20 +710,18 @@
           <span>n8n</span><span>Claude API</span><span>Shopify GraphQL</span><span>Google Search Console</span><span>Telegram Bot</span>
         </div>
         <div class="media-strips fade-up" data-d="2">
-          <figure>
+          <figure class="strip-crop">
             <img src="/projects/assets/youinn8n-1-bulk.jpg" alt="n8n workflow — bulk content upgrade pipeline with Claude rewriting and Shopify publishing" loading="lazy">
-            <figcaption>Content quality pipeline — fetch, rewrite with Claude, publish</figcaption>
+            <figcaption>Content quality pipeline — fetch, rewrite with Claude, publish to Shopify</figcaption>
           </figure>
-          <div class="m-row">
-            <figure>
-              <img src="/projects/assets/youinn8n-2-research.jpg" alt="n8n workflow — SEO research pipeline from Google Search Console to Telegram proposals" loading="lazy">
-              <figcaption>SEO research — GSC → Claude → Telegram, every Monday</figcaption>
-            </figure>
-            <figure>
-              <img src="/projects/assets/youinblog-2-article.jpg" alt="Published YOUIN article with AI-generated TL;DR summary box" loading="lazy">
-              <figcaption>The result — live article with TL;DR block and FAQ schema</figcaption>
-            </figure>
-          </div>
+          <figure class="strip-crop">
+            <img src="/projects/assets/youinn8n-2-research.jpg" alt="n8n workflow — SEO research pipeline from Google Search Console to Claude, Telegram and Sheets" loading="lazy">
+            <figcaption>SEO research — GSC → Claude → Telegram + Sheets, every Monday 9am</figcaption>
+          </figure>
+          <figure class="strip-top">
+            <img src="/projects/assets/youinblog-1-index.jpg" alt="YOUIN blog — live index with AI-upgraded articles in three languages" loading="lazy">
+            <figcaption>The result — a blog that publishes itself, in three languages</figcaption>
+          </figure>
         </div>
       </article>
     </div>
@@ -851,33 +838,37 @@
         </div>
       </article>
 
-      <!-- 08 Fran Timer -->
+      <!-- 08 Timers -->
       <article class="project">
         <div class="p-top fade-up">
           <div>
-            <span class="p-num">08 — Personal Training App</span>
-            <h3>Timer <em>— a PWA built for one person.</em></h3>
+            <span class="p-num">08 — Personal Apps</span>
+            <h3>Timers <em>— two apps, one user each.</em></h3>
           </div>
         </div>
         <p class="p-desc fade-up" data-d="1">
-          An interval training timer designed around one user's exact routine: warm-up, dynamic blocks split into 45/15 work-rest cycles, morse-code beeps before every transition. Shipped as a PWA installed from Safari — no App Store, no subscriptions, no expiry.
+          Sometimes the best software is shaped entirely around a single person. Two examples: an interval training timer built for one athlete's exact routine — 45/15 work-rest cycles, morse-code beeps before every transition, installed as a PWA from Safari — and a freelance time tracker with magic-link login, per-client timers with pause, analytics and CSV export, backed by Supabase.
         </p>
         <div class="p-stack fade-up" data-d="2">
-          <span>PWA</span><span>Vanilla JS</span><span>Web Audio API</span><span>Vercel</span>
+          <span>PWA</span><span>Vanilla JS</span><span>Web Audio API</span><span>Supabase</span><span>Vercel</span>
         </div>
         <div class="media-phones fade-up" data-d="2">
           <figure>
-            <img src="/projects/assets/frantimer-1-home.jpg" alt="Timer PWA — home screen" loading="lazy">
-            <figcaption>Home</figcaption>
+            <img src="/projects/assets/frantimer-1-home.jpg" alt="Training timer PWA — home screen" loading="lazy">
+            <figcaption>Training timer — home</figcaption>
           </figure>
           <figure>
-            <img src="/projects/assets/frantimer-2-create.jpg" alt="Timer PWA — timer builder with warm-up and dynamic blocks" loading="lazy">
-            <figcaption>Builder — blocks &amp; cycles</figcaption>
+            <img src="/projects/assets/frantimer-2-create.jpg" alt="Training timer PWA — session builder with warm-up and dynamic blocks" loading="lazy">
+            <figcaption>Training timer — builder</figcaption>
           </figure>
-          <div class="m-note">
-            <h4>Built for exactly one user.</h4>
-            <p>Sometimes the best software is the one shaped entirely around a single person's workflow. This is what bespoke means: one routine, one phone, zero friction.</p>
-          </div>
+          <figure>
+            <img src="/projects/assets/paulatimer-2-home.jpg" alt="Time tracker — clients list with totals per client" loading="lazy">
+            <figcaption>Time tracker — clients</figcaption>
+          </figure>
+          <figure>
+            <img src="/projects/assets/paulatimer-3-running.jpg" alt="Time tracker — session running with pause and finish controls" loading="lazy">
+            <figcaption>Time tracker — running</figcaption>
+          </figure>
         </div>
       </article>
 
