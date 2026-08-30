@@ -1,6 +1,18 @@
 {
   "rewrites": [
     {
+      "source": "/boats/charter-en-ibiza/:path*",
+      "destination": "https://charter-os-production.up.railway.app/:path*"
+    },
+    {
+      "source": "/boats/charter-en-ibiza/",
+      "destination": "https://charter-os-production.up.railway.app/"
+    },
+    {
+      "source": "/boats/charter-en-ibiza",
+      "destination": "https://charter-os-production.up.railway.app/"
+    },
+    {
       "source": "/hotels/vibra-demo/:path*",
       "destination": "https://vibra-hotel-brain-production.up.railway.app/:path*"
     },
