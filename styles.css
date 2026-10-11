@@ -1,0 +1,1020 @@
+/* ────────────────────────────────────────────
+   VARIABLES — warm off-white / cream light theme
+──────────────────────────────────────────── */
+:root {
+  --bg:           #F0EAE0;
+  --surface:      #E9E2D7;
+  --surface-2:    #E0D8CB;
+  --surface-hover:#D8CFBF;
+  --text:         #1A1610;
+  --text-muted:   #6D655C;
+  --text-dim:     #B5ADA4;
+  --accent:       #8C5F2C;
+  --accent-light: rgba(140, 95, 44, 0.09);
+  --border:       rgba(26, 22, 16, 0.10);
+  --border-light: rgba(26, 22, 16, 0.16);
+  --max:          1120px;
+  --px:           clamp(22px, 5.5vw, 88px);
+}
+
+/* ────────────────────────────────────────────
+   RESET
+──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* Subtle vertical grid — parallel line motif */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent calc((100vw - 1px) / 12 - 1px),
+    rgba(26, 22, 16, 0.032) calc((100vw - 1px) / 12 - 1px),
+    rgba(26, 22, 16, 0.032) calc((100vw - 1px) / 12)
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ────────────────────────────────────────────
+   LAYOUT
+──────────────────────────────────────────── */
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--px);
+  position: relative;
+  z-index: 1;
+}
+section { position: relative; z-index: 1; }
+
+/* ────────────────────────────────────────────
+   TYPOGRAPHY
+──────────────────────────────────────────── */
+h1, h2, h3, h4 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+
+/* ────────────────────────────────────────────
+   SCROLL ANIMATIONS
+──────────────────────────────────────────── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+.fade-up[data-d="1"] { transition-delay: 0.08s; }
+.fade-up[data-d="2"] { transition-delay: 0.16s; }
+.fade-up[data-d="3"] { transition-delay: 0.24s; }
+.fade-up[data-d="4"] { transition-delay: 0.32s; }
+.fade-up[data-d="5"] { transition-delay: 0.40s; }
+.fade-up[data-d="6"] { transition-delay: 0.48s; }
+
+/* ────────────────────────────────────────────
+   SHARED: section label
+──────────────────────────────────────────── */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 22px;
+}
+.label::before {
+  content: '';
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ────────────────────────────────────────────
+   1. HERO
+──────────────────────────────────────────── */
+.hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero > .wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-top: 52px;
+  padding-bottom: 72px;
+}
+
+/* Ghost "31" watermark */
+.hero-mark {
+  position: absolute;
+  right: -0.04em;
+  bottom: -0.12em;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(220px, 34vw, 520px);
+  font-weight: 700;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(26, 22, 16, 0.055);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.04em;
+  z-index: 0;
+}
+
+
+/* ── Logo wordmark ── */
+/* NOTE: Replace with <img src="logo.png" alt="Parallel31"> when you have the file */
+.hero-logo {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: auto;
+  padding-bottom: clamp(64px, 12vh, 140px);
+}
+.logo-name {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+  font-size: clamp(30px, 4vw, 44px);
+  letter-spacing: 0.01em;
+  color: var(--text);
+  line-height: 1;
+  display: block;
+}
+.logo-sub {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 7px;
+}
+
+/* ── Hero body ── */
+.hero-body {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 26px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.hero h1 {
+  font-size: clamp(52px, 8.5vw, 112px);
+  font-weight: 600;
+  margin-bottom: 32px;
+  color: var(--text);
+}
+.hero h1 em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+.hero-sub {
+  font-size: clamp(15px, 1.6vw, 17px);
+  color: var(--text-muted);
+  line-height: 1.78;
+  font-weight: 300;
+}
+
+/* ── Hero footer strip ── */
+.hero-foot {
+  position: relative;
+  z-index: 1;
+  padding-top: 40px;
+  margin-top: 60px;
+}
+.hero-strip {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.strip-item {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(17px, 1.6vw, 22px);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.strip-div {
+  flex: 1;
+  height: 1px;
+  background: var(--border-light);
+  margin: 0 20px;
+}
+
+/* ── Language switcher ── */
+.lang {
+  position: absolute;
+  top: 18px;
+  right: var(--px);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: var(--text-dim);
+}
+/* Padding para que el área táctil llegue a ~44 px sin agrandar el texto */
+.lang a {
+  padding: 14px 8px;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+.lang a:hover { color: var(--accent); }
+.lang a[aria-current="page"] { color: var(--text); }
+
+/* ────────────────────────────────────────────
+   1b. FEATURED — CharterGo
+──────────────────────────────────────────── */
+.featured {
+  padding: clamp(80px, 11vw, 130px) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 88px);
+  align-items: center;
+}
+
+.featured h2 {
+  font-size: clamp(30px, 4vw, 52px);
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+.featured h2 em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+.featured-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 38px;
+}
+.featured-list li {
+  position: relative;
+  padding-left: 28px;
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-weight: 300;
+}
+.featured-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.8em;
+  width: 14px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.55;
+}
+
+.featured-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+/* Tarjeta con la identidad de CharterGo (Marino + Aqua), no la de Parallel31 */
+.cg-card {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #0B1B33;
+}
+.cg-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cg-card:hover img { transform: scale(1.03); }
+.cg-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 27, 51, 0) 40%, rgba(11, 27, 51, 0.94) 100%);
+}
+.cg-brand {
+  position: absolute;
+  left: clamp(20px, 3vw, 32px);
+  right: clamp(20px, 3vw, 32px);
+  bottom: clamp(18px, 2.6vw, 28px);
+  z-index: 1;
+}
+/* Proporciones del lockup de chartergo.app: yate 2,533× el wordmark */
+.cg-lockup {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Space Grotesk', 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: clamp(24px, 2.6vw, 30px);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #fff;
+}
+.cg-lockup svg {
+  width: 2.533em;
+  height: 2.533em;
+  margin: -0.533em 0 -0.8em -0.3em;
+  fill: #29D3C4;
+  flex: none;
+}
+.cg-lockup b { font-weight: 700; color: #29D3C4; }
+.cg-meta {
+  display: block;
+  margin-top: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* ────────────────────────────────────────────
+   2. SERVICES
+──────────────────────────────────────────── */
+.services {
+  padding: clamp(80px, 11vw, 130px) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.services-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 52px;
+  flex-wrap: wrap;
+}
+
+.services-header h2 {
+  font-size: clamp(28px, 3.6vw, 48px);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.services-count {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  padding-bottom: 6px;
+  white-space: nowrap;
+}
+
+/* Gap trick → clean inner borders */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.service-card {
+  background: var(--bg);
+  padding: 38px 32px 46px;
+  transition: background 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+.service-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.service-card:hover { background: var(--surface-hover); }
+.service-card:hover::after { opacity: 1; }
+
+.card-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--text-dim);
+  display: block;
+  margin-bottom: 34px;
+}
+
+.service-card h3 {
+  font-size: clamp(21px, 2.1vw, 26px);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.service-card > p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.72;
+  margin-bottom: 28px;
+  font-weight: 300;
+}
+
+.service-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.service-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 300;
+}
+.service-list li::before {
+  content: '';
+  display: block;
+  width: 14px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+/* ────────────────────────────────────────────
+   3. PHILOSOPHY
+──────────────────────────────────────────── */
+.philosophy {
+  padding: clamp(80px, 11vw, 130px) 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.philosophy::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 35%;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 17px,
+    rgba(26, 22, 16, 0.028) 17px,
+    rgba(26, 22, 16, 0.028) 18px
+  );
+  pointer-events: none;
+}
+
+.philosophy-inner { max-width: 700px; }
+
+.philosophy h2 {
+  font-size: clamp(30px, 4.8vw, 62px);
+  font-weight: 600;
+  font-style: italic;
+  margin-bottom: 40px;
+}
+
+.philosophy p {
+  font-size: clamp(15px, 1.55vw, 17px);
+  color: var(--text-muted);
+  line-height: 1.82;
+  max-width: 580px;
+  font-weight: 300;
+}
+.philosophy p + p { margin-top: 20px; }
+
+/* ────────────────────────────────────────────
+   4. CLIENTS
+──────────────────────────────────────────── */
+.clients {
+  padding: clamp(80px, 11vw, 130px) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.clients-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 52px;
+  flex-wrap: wrap;
+}
+
+.clients-header h2 {
+  font-size: clamp(28px, 3.4vw, 44px);
+  font-weight: 600;
+}
+
+.clients-note {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: 300;
+  max-width: 280px;
+  text-align: right;
+  line-height: 1.6;
+  padding-bottom: 4px;
+}
+
+.clients-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.client-block {
+  background: var(--bg);
+  padding: 36px 28px 40px;
+  transition: background 0.3s ease;
+  position: relative;
+}
+.client-block:hover { background: var(--surface); }
+
+.client-icon {
+  display: block;
+  margin-bottom: 20px;
+}
+.client-icon svg {
+  width: 20px;
+  height: 20px;
+  opacity: 0.6;
+}
+
+.client-block h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(20px, 1.9vw, 24px);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.client-block p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+/* ────────────────────────────────────────────
+   5. OUTCOMES
+──────────────────────────────────────────── */
+.outcomes {
+  padding: clamp(80px, 11vw, 130px) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.outcomes-header { margin-bottom: 48px; }
+.outcomes-header h2 {
+  font-size: clamp(26px, 3.3vw, 42px);
+  font-weight: 600;
+}
+
+.outcomes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.outcome-block {
+  background: var(--bg);
+  padding: 30px 24px 36px;
+  transition: background 0.3s ease;
+}
+.outcome-block:hover { background: var(--surface); }
+
+.outcome-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin-bottom: 20px;
+  opacity: 0.65;
+}
+
+.outcome-block h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(17px, 1.6vw, 20px);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.outcome-block p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+/* ────────────────────────────────────────────
+   6. PROCESS
+──────────────────────────────────────────── */
+.process {
+  padding: clamp(80px, 11vw, 130px) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.process-header { margin-bottom: 68px; }
+.process-header h2 {
+  font-size: clamp(26px, 3.3vw, 42px);
+  font-weight: 600;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  position: relative;
+}
+
+.steps::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--border) 60%, transparent 100%);
+}
+
+.step {
+  padding-top: 44px;
+  padding-right: 36px;
+  position: relative;
+}
+.step::before {
+  content: '';
+  position: absolute;
+  top: 5px; left: 0;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px rgba(140,95,44,0.22);
+}
+
+.step-num {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.step h4 {
+  font-size: clamp(19px, 1.9vw, 23px);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.step p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+/* ────────────────────────────────────────────
+   7. CONTACT FORM
+──────────────────────────────────────────── */
+.contact {
+  padding: clamp(80px, 12vw, 150px) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Horizontal lines texture behind form */
+.contact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 23px,
+    rgba(26, 22, 16, 0.022) 23px,
+    rgba(26, 22, 16, 0.022) 24px
+  );
+  pointer-events: none;
+}
+
+/* Ghost 31 behind form */
+.contact::after {
+  content: '31';
+  position: absolute;
+  right: -0.06em;
+  bottom: -0.18em;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(180px, 26vw, 400px);
+  font-weight: 700;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(26, 22, 16, 0.04);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.04em;
+}
+
+.contact-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(48px, 8vw, 100px);
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+
+.contact-text {}
+
+.contact-text h2 {
+  font-size: clamp(30px, 4vw, 52px);
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.contact-text p {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.75;
+  font-weight: 300;
+  max-width: 360px;
+}
+
+.contact-detail {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contact-detail a {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 300;
+  transition: color 0.2s ease;
+}
+.contact-detail a:hover { color: var(--accent); }
+
+.contact-detail .cd-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  margin-top: 16px;
+  display: block;
+}
+.contact-detail .cd-label:first-child { margin-top: 0; }
+
+/* Form */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--border-light);
+  padding: 13px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text);
+  transition: border-color 0.25s ease, background 0.25s ease;
+  outline: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+  resize: none;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: var(--text-dim);
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.form-field textarea { min-height: 130px; }
+
+.form-submit,
+.featured-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  background: var(--text);
+  color: var(--bg);
+  border: 1px solid var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  border-radius: 0;
+  align-self: flex-start;
+}
+.form-submit:hover,
+.featured-cta:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.form-note {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 300;
+}
+
+/* ────────────────────────────────────────────
+   FOOTER
+──────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 0;
+  position: relative;
+  z-index: 1;
+  background: var(--bg);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-brand { display: flex; align-items: baseline; gap: 14px; }
+
+.footer-name {
+  font-family: 'Raleway', sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+.footer-tagline {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.footer-right { display: flex; align-items: center; gap: 28px; }
+
+.footer-right a {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 300;
+  transition: color 0.2s ease;
+}
+.footer-right a:hover { color: var(--accent); }
+
+/* ────────────────────────────────────────────
+   RESPONSIVE
+──────────────────────────────────────────── */
+@media (max-width: 1000px) {
+  .clients-grid { grid-template-columns: repeat(2, 1fr); }
+  .outcomes-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .featured-grid { grid-template-columns: 1fr; }
+  .cg-card { aspect-ratio: 4 / 3; }
+
+  .services-grid { grid-template-columns: 1fr; }
+  .services-header h2 { white-space: normal; }
+
+  .steps {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 48px 36px;
+  }
+  .steps::before { display: none; }
+  .step { padding-top: 0; }
+  .step::before { display: none; }
+
+  .contact-inner { grid-template-columns: 1fr; gap: 52px; }
+  .contact-text p { max-width: 100%; }
+}
+
+@media (max-width: 640px) {
+  :root { --px: 20px; }
+
+  .hero { padding: 40px 0 56px; }
+  .hero-lines { display: none; }
+
+  .clients-grid { grid-template-columns: 1fr; }
+  .outcomes-grid { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr; gap: 40px; }
+
+  .form-row { grid-template-columns: 1fr; }
+
+  .hero-foot { flex-direction: column; align-items: flex-start; gap: 16px; }
+  /* Las 4 palabras no caben en una línea a 390 px: se reparten en dos */
+  .hero-strip { flex-wrap: wrap; gap: 4px 22px; }
+  .strip-div { display: none; }
+
+  .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .footer-brand { flex-direction: column; gap: 6px; }
+  .footer-right { gap: 18px; }
+
+  .philosophy::after { display: none; }
+  .clients-header { flex-direction: column; }
+  .clients-note { text-align: left; }
+}
