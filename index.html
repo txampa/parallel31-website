@@ -332,10 +332,11 @@
         <form
           class="contact-form fade-up"
           data-d="2"
-          action="https://formsubmit.co/hello@parallel31.io"
+          action="https://formsubmit.co/086b65240f21ce6f9caf51599e1cfcca"
           method="POST"
         >
-          <!-- FormSubmit config -->
+          <!-- FormSubmit config. action = alias de hello@parallel31.io que da FormSubmit; _honey: si un bot lo rellena, FormSubmit descarta el envío -->
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
           <input type="hidden" name="_subject" value="Nueva consulta — Parallel31.io">
           <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_template" value="table">
